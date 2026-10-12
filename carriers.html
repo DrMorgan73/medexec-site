@@ -122,6 +122,9 @@
       clip-path: inset(0 -100vmax);
       color: #fff;
     }
+.hero-single { grid-template-columns: 1fr; }
+.hero-single .hero-copy { max-width: 700px; }
+
     .hero .eyebrow { color: var(--brand-green); }
     .hero .eyebrow::before { background: var(--cyan); }
     .hero h1 em { color: var(--cyan); }
@@ -516,8 +519,8 @@
       *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
     }
   </style>
-<style>body{max-width:820px;margin:40px auto;padding:0 28px;font:16px/1.55 Georgia,serif;color:#172c32}header{border-top:6px solid #0b6f70;padding:22px 0;margin-bottom:18px;border-bottom:1px solid #b9c6c3}header h1{margin:0 0 8px;font-size:28px}header p{margin:.35rem 0;color:#506268}section{border-top:1px solid #b9c6c3;padding:18px 0}section.intro{border-top:0}h2{font-size:20px}h3{font-size:17px}p{white-space:pre-line}.notice{background:#fff3bd;padding:12px 14px;color:#172c32}.signatures{display:grid;grid-template-columns:1fr 1fr;gap:28px}.signatures>div{border-top:2px solid #172c32;padding-top:12px}@media(max-width:620px){.signatures{grid-template-columns:1fr}}@media print{body{margin:0}.notice{border:1px solid #b9c6c3}}</style>
-<style>body{max-width:780px;margin:40px auto;padding:0 28px;font:16px/1.6 Georgia,serif;color:#172c32}header{border-top:6px solid #0b6f70;padding:20px 0;border-bottom:1px solid #b9c6c3}small{font-family:Helvetica,sans-serif;color:#506268}section{padding:18px 0;border-bottom:1px solid #d8dfdd}h1{font-size:28px}h2{font-size:20px}</style>
+
+
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -525,7 +528,7 @@
   <div class="pilot-strip">MEDEXEC is in pilot. <strong>Screen 50 claims free</strong> — compare our flags against your adjusters' findings.</div>
 
   <nav class="nav" aria-label="Primary">
-    <a class="nav-brand" href="index.html" aria-label="MEDEXEC home"><strong>MEDEXEC</strong></a>
+    <a class="nav-brand" href="index.html" aria-label="MEDEXEC home"><img src="logo.png" alt="MEDEXEC" /></a>
     <a href="index.html#workflow">Workflow</a>
     <a href="algorithms.html">Algorithms</a>
     <a href="carriers.html" aria-current="page"><strong>For Carriers & TPAs</strong></a>
@@ -533,7 +536,7 @@
   </nav>
 
   <main id="main">
-    <section class="wrap hero" aria-labelledby="hero-title">
+    <section class="wrap hero hero-single" aria-labelledby="hero-title">
       <div>
         <p class="eyebrow">MEDEXEC for carriers, SIU teams, and TPAs</p>
         <h1 id="hero-title">Stop paying claims <em>you shouldn't.</em></h1>
@@ -635,11 +638,15 @@
     </section>
   </main>
 
-  <footer class="wrap section" aria-label="Footer">
-    <p><strong>MEDEXEC</strong> — From records to resolution.<br />
+  <footer class="footer">
+  <div class="footer-inner">
+    <div>
+<p><strong>MEDEXEC</strong> — From records to resolution.<br />
     <small>The clinical intelligence platform for injury claims. Developed by doctors to help doctors.<br />
     In pilot. Built for proof.</small></p>
     <p><small><a href="index.html">Home</a> · <a href="algorithms.html">Algorithms</a> · <a href="carriers.html">For Carriers & TPAs</a> · <a href="https://app.getmedexec.com/signin">Sign In</a></small></p>
-  </footer>
+    </div>
+  </div>
+</footer>
 </body>
 </html>

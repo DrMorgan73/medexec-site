@@ -122,6 +122,9 @@
       clip-path: inset(0 -100vmax);
       color: #fff;
     }
+.hero-single { grid-template-columns: 1fr; }
+.hero-single .hero-copy { max-width: 700px; }
+
     .hero .eyebrow { color: var(--brand-green); }
     .hero .eyebrow::before { background: var(--cyan); }
     .hero h1 em { color: var(--cyan); }
@@ -518,8 +521,9 @@
   </style>
 </head>
 <body>
+  <div class="pilot-strip">MEDEXEC is in pilot. Product development in progress.</div>
   <nav class="nav" aria-label="Primary">
-    <a class="nav-brand" href="index.html" aria-label="MEDEXEC home"><strong>MEDEXEC</strong></a>
+    <a class="nav-brand" href="index.html" aria-label="MEDEXEC home"><img src="logo.png" alt="MEDEXEC" /></a>
     <a href="index.html#workflow">Workflow</a>
     <a href="algorithms.html" aria-current="page"><strong>Algorithms</strong></a>
     <a href="carriers.html">For Carriers &amp; TPAs</a>
@@ -527,7 +531,7 @@
   </nav>
 
   <main id="main">
-    <section class="wrap hero" aria-labelledby="hero-title">
+    <section class="wrap hero hero-single" aria-labelledby="hero-title">
       <div>
         <p class="eyebrow">The MEDEXEC algorithm catalog</p>
         <h1 id="hero-title">Seventeen algorithms. <em>One evidence panel.</em></h1>
@@ -691,11 +695,15 @@
     </section>
   </main>
 
-  <footer class="wrap section" aria-label="Footer">
-    <p><strong>MEDEXEC</strong> — From records to resolution.<br />
+  <footer class="footer">
+  <div class="footer-inner">
+    <div>
+<p><strong>MEDEXEC</strong> — From records to resolution.<br />
     <small>The clinical intelligence platform for injury claims. Developed by doctors to help doctors.<br />
     In pilot. Built for proof.</small></p>
     <p><small><a href="index.html">Home</a> · <a href="algorithms.html">Algorithms</a> · <a href="carriers.html">For Carriers &amp; TPAs</a> · <a href="https://app.getmedexec.com/signin">Sign In</a></small></p>
-  </footer>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
