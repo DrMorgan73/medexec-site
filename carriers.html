@@ -233,13 +233,17 @@
     .workflow { background: var(--ink); color: var(--paper); }
     .workflow .section-kicker { color: var(--yellow); }
     .workflow .section-intro { color: color-mix(in srgb, var(--paper) 74%, transparent); }
-    .steps { margin-top: 3.4rem; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid color-mix(in srgb, var(--paper) 30%, transparent); }
-    .step { padding: 2rem 2rem 1rem 0; min-height: 250px; border-right: 1px solid color-mix(in srgb, var(--paper) 22%, transparent); }
+    .steps { margin-top: 3.4rem; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--rule); }
+    .steps-4 { grid-template-columns: repeat(4, 1fr); }
+    .step { padding: 2rem 2rem 1rem 0; min-height: 250px; border-right: 1px solid var(--rule); }
     .step + .step { padding-left: 2rem; }
     .step:last-child { border-right: 0; }
-    .step-num { font: 500 3rem/1 var(--serif); color: var(--yellow); }
+    .step-num { font: 500 3rem/1 var(--serif); color: var(--yellow) !important; font-size: 3rem !important; }
     .step h3 { font-size: 1.08rem; margin: 2.5rem 0 .65rem; }
-    .step p { margin: 0; color: color-mix(in srgb, var(--paper) 70%, transparent); font-size: .93rem; }
+    .step p:not(.step-num) { margin: 0; color: var(--muted); font-size: .93rem; }
+    .workflow .steps { border-top-color: color-mix(in srgb, var(--paper) 30%, transparent); }
+    .workflow .step { border-right-color: color-mix(in srgb, var(--paper) 22%, transparent); }
+    .workflow .step p:not(.step-num) { color: color-mix(in srgb, var(--paper) 70%, transparent); }
     .human-gate { margin-top: 3rem; display: grid; grid-template-columns: auto 1fr; gap: 1rem; max-width: 730px; align-items: start; }
     .human-gate svg { color: var(--yellow); }
     .human-gate strong { display: block; margin-bottom: .25rem; }
@@ -578,7 +582,7 @@
     <section class="wrap section" id="how" aria-labelledby="how-title">
       <p class="section-kicker">How it works</p>
       <h2 id="how-title">From claim file to flagged findings in four steps.</h2>
-      <div class="steps">
+      <div class="steps steps-4">
         <div class="step"><p class="step-num">1</p><h3>Upload the claim file.</h3><p>Medical records, bills, demand package. Whatever your adjuster has.</p></div>
         <div class="step"><p class="step-num">2</p><h3>MEDEXEC runs 17 screens.</h3><p>Fraud, causation, timeline, bills, reserves, valuation. All in one pass, in minutes.</p></div>
         <div class="step"><p class="step-num">3</p><h3>Review flagged findings.</h3><p>Every flag carries its evidence and its citation. Your adjuster decides — the system never does.</p></div>
