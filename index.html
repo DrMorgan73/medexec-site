@@ -1274,13 +1274,30 @@ body.door-lock{overflow:hidden}
         });
       }
 
-      function downloadDraft(data) {
+      function iecSignatureBlock(data) {
+        // IEC's signature is pre-applied in the website: every executed copy
+        // goes out with both signatures.
+        return '<div><h3>International Empire Consultants, Inc.</h3>'
+          + '<p>Signature: <em>Mohammed M. Morgan</em></p>'
+          + '<p>Name: Mohammed M. Morgan</p>'
+          + '<p>Title: Founder &amp; CEO</p>'
+          + '<p>Date: ' + escapeHtml(data.effectiveDate) + '</p></div>';
+      }
+
+      function buildSignedHtml(data) {
         var docSections = sections.en.slice(0, 11).map(function (section, index) {
           var heading = index === 0 ? "" : '<h2>' + escapeHtml(section.title) + '</h2>';
           return '<section' + (index === 0 ? ' class="intro"' : '') + '>' + heading + '<p>' + escapeHtml(fillAgreementText(section.text, data)) + '</p></section>';
         }).join("");
-        var signatureBlock = '<section class="execution"><h2>Execution</h2><p><strong>IN WITNESS WHEREOF</strong>, the Parties have executed this Agreement as of the Effective Date.</p><div class="signatures"><div><h3>International Empire Consultants, Inc.</h3><p>Signature: ___________________________</p><p>Name: ___________________________</p><p>Title: ___________________________</p><p>Date: ___________________________</p></div><div><h3>' + escapeHtml(data.party) + '</h3><p>Signature: <em>' + escapeHtml(data.signature) + '</em></p><p>Name: ' + escapeHtml(data.name) + '</p><p>Title: ' + escapeHtml(data.title || "—") + '</p><p>Date: ' + escapeHtml(data.date) + '</p></div></div></section>';
-        var html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MEDEXEC Mutual Non-Disclosure Agreement</title></head><body><header><h1>Mutual Non-Disclosure Agreement</h1><p>International Empire Consultants, Inc. and ' + escapeHtml(data.party) + '</p></header>' + docSections + signatureBlock + '</body></html>';
+        var signatureBlock = '<section class="execution"><h2>Execution</h2><p><strong>IN WITNESS WHEREOF</strong>, the Parties have executed this Agreement as of the Effective Date.</p><div class="signatures">'
+          + iecSignatureBlock(data)
+          + '<div><h3>' + escapeHtml(data.party) + '</h3><p>Signature: <em>' + escapeHtml(data.signature) + '</em></p><p>Name: ' + escapeHtml(data.name) + '</p><p>Title: ' + escapeHtml(data.title || "\u2014") + '</p><p>Date: ' + escapeHtml(data.date) + '</p></div></div></section>';
+        return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MEDEXEC Mutual Non-Disclosure Agreement</title></head><body><header><h1>Mutual Non-Disclosure Agreement</h1><p>International Empire Consultants, Inc. and ' + escapeHtml(data.party) + '</p></header>' + docSections + signatureBlock + '</body></html>';
+      }
+
+      function downloadDraft(data) {
+        var html = buildSignedHtml(data);
+
         var blob = new Blob([html], { type: "text/html;charset=utf-8" });
         var url = URL.createObjectURL(blob);
         var link = document.createElement("a");
@@ -1447,6 +1464,29 @@ body.door-lock{overflow:hidden}
           return;
         }
         signedData = data;
+        // Send the executed copy (both signatures) to the team inbox.
+        // Fire-and-forget: the signer keeps their download and the demo
+        // unlocks even if this call fails.
+        try {
+          fetch("https://app.getmedexec.com/api/nda/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              product: "medexec",
+              effectiveDate: data.effectiveDate,
+              iecState: data.iecState,
+              party: data.party,
+              entityTypeState: data.entityTypeState,
+              address: data.address,
+              purpose: data.purpose,
+              name: data.name,
+              title: data.title,
+              date: data.date,
+              signature: data.signature,
+              documentHtml: buildSignedHtml(data)
+            })
+          }).catch(function () {});
+        } catch (e) {}
         status.textContent = t.ready;
         document.getElementById("download-copy").hidden = false;
         var productDemo = document.getElementById("product-demo");
