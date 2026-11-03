@@ -853,6 +853,7 @@ body.door-lock{overflow:hidden}
               <div class="field full"><label for="counterparty-address" id="counterparty-address-label">Counterparty principal address</label><input id="counterparty-address" aria-label="Counterparty principal address" required autocomplete="street-address" /></div>
               <div class="field full"><label for="agreement-purpose" id="agreement-purpose-label">Purpose</label><input id="agreement-purpose" aria-label="Purpose" required placeholder="a potential pilot deployment of the MEDEXEC clinical intelligence platform" /></div>
               <div class="field"><label for="printed-name" id="printed-label">Counterparty signer’s printed name</label><input id="printed-name" aria-label="Counterparty signer’s printed name" required autocomplete="name" /></div>
+              <div class="field"><label for="signer-email" id="signer-email-label">Signer email for the executed copy</label><input id="signer-email" aria-label="Signer email for the executed copy" type="email" required autocomplete="email" /></div>
               <div class="field"><label for="signature-date" id="date-label">Signature date</label><input id="signature-date" aria-label="Signature date" type="date" required /></div>
               <div class="field"><label for="signer-title" id="title-label">Signer title (optional)</label><input id="signer-title" aria-label="Signer title (optional)" autocomplete="organization-title" /></div>
               <div class="field full"><label for="typed-signature" id="typed-label">Typed signature</label><input class="signature-input" id="typed-signature" aria-label="Typed signature" required placeholder="Type your full legal name" /></div>
@@ -862,7 +863,7 @@ body.door-lock{overflow:hidden}
               <button class="btn secondary" type="button" id="download-copy" hidden>Download signed copy</button>
               <div class="form-status" id="form-status" role="status"></div>
             </div>
-            <p class="fine-print" id="signature-fine">When you sign and submit, your executed NDA is transmitted to IEC, Inc. — an executed copy is emailed to IEC at info@iecincglobal.com. You can also download a signed copy for your own records.</p>
+            <p class="fine-print" id="signature-fine">When you sign and submit, the executed NDA is recorded by IEC, Inc., and an executed PDF copy is emailed to IEC at info@iecincglobal.com and to you at the email address above. You can also download the signed PDF for your own records.</p>
           </form>
         </section>
       </div>
@@ -916,7 +917,7 @@ body.door-lock{overflow:hidden}
         "The Parties acknowledge that breach may cause irreparable harm for which monetary damages are inadequate, and the Disclosing Party is entitled to seek injunctive relief in addition to any other remedies.",
         "If any disclosure involves protected health information (\"PHI\") as defined by HIPAA, the Parties shall execute a Business Associate Agreement before any PHI is disclosed, and this Agreement does not authorize the disclosure of PHI.",
         "This Agreement is the entire agreement on confidentiality for the Purpose and supersedes prior discussions on that subject. It may not be amended except in a signed writing. Neither Party may assign it without the other's written consent, except to a successor in a merger or asset sale. If any provision is unenforceable, the remainder continues in effect. This Agreement is governed by the laws of the Commonwealth of Massachusetts, without regard to conflict-of-law rules. The Parties consent to the exclusive jurisdiction of the state and federal courts located in the Commonwealth of Massachusetts for any dispute arising under this Agreement. No waiver of any provision of this Agreement is effective unless in a signed writing, and no waiver of one breach constitutes waiver of any other. It may be executed in counterparts, including by electronic signature.",
-        "IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.\n\nInternational Empire Consultants, Inc.\n\nSignature: ___________________________  Name: ___________________________\n\nTitle: ___________________________  Date: ___________________________\n\n[COUNTERPARTY NAME]\n\nSignature: ___________________________  Name: ___________________________\n\nTitle: ___________________________  Date: ___________________________"
+        "IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.\n\nInternational Empire Consultants, Inc. — pre-signed by IEC\n\nSignature: Mohammed Morgan, MD  Name: Mohammed Morgan, MD\n\nTitle: Founder & CEO  Date: the date the executed copy is issued\n\n[COUNTERPARTY NAME]\n\nSignature: ___________________________  Name: ___________________________\n\nTitle: ___________________________  Date: ___________________________"
       ];
 
       var enMeta = [
@@ -959,10 +960,10 @@ body.door-lock{overflow:hidden}
 
       var ui = {
         en: {
-          sections: "Document sections", label: "Mutual NDA · Section", of: "of", prev: "← Previous", review: "Mark reviewed & continue", reviewed: "Reviewed · Continue", reset: "Reset Matter (start fresh)", resetDone: "Matter cleared. Starting fresh.", guide: "NDA document guide", limit: "Answers are limited to this agreement’s text.", placeholder: "Ask about confidentiality, term, venue…", hello: "I’ll help you review this agreement section by section. Ask a question, or use one of the prompts below.", quick: ["How long does it last?", "Where are disputes heard?", "Can PHI be shared?"], finalLabel: "Final step · Signer copy", finalTitle: "Complete the agreement and sign", finalIntro: "All sections have been reviewed. Complete every agreement detail and add the counterparty signer’s typed signature.", effectiveDate: "Effective date", iecState: "IEC state of incorporation", party: "Counterparty legal name", entityTypeState: "Counterparty entity type and state", address: "Counterparty principal address", purposeLabel: "Purpose", printed: "Counterparty signer’s printed name", date: "Signature date", title: "Signer title (optional)", typed: "Typed signature", typedPlaceholder: "Type your full legal name", download: "Sign agreement & open demo", downloadCopy: "Download signed copy", fine: "Information entered here stays in this browser session and is not transmitted.", ready: "Agreement signed. The MEDEXEC demo is open below.", changed: "Agreement details changed. Sign again to reopen the demo.", missing: "Complete every required agreement and signature field before opening the demo.", incompleteReview: "Review every section before signing.", fallback: "I can only answer from this agreement. Try asking about the term, exclusions, permitted access, required disclosure, PHI, Massachusetts venue, return or destruction, or signatures.", term: "The Agreement continues for two years from the Effective Date. Sections 1–4 and 6 survive for two years from each disclosure. Trade-secret duties survive for as long as the information remains a trade secret.", exclude: "The agreement excludes information that becomes public without breach, was already known without a confidentiality duty and can be documented, is independently developed without use of the disclosed information, or is rightfully received from a third party without a confidentiality duty.", access: "Access is limited to the receiving party’s and its affiliates’ employees, contractors, and professional advisors who need the information for the Purpose and are bound by obligations at least as protective as this Agreement.", purpose: "Confidential Information may be used only for the completed Purpose stated by the parties.", disclosure: "If disclosure is legally required, the receiving party must, when legally permitted, promptly notify the disclosing party, cooperate to seek confidential treatment, and disclose only the legal minimum.", return: "On written request or when discussions end, Confidential Information must be returned or destroyed, except for one archival copy kept for legal compliance.", owner: "The Agreement grants no intellectual-property license or right. Neither party is obligated to enter a further agreement or transaction.", phi: "The Agreement does not authorize disclosure of protected health information. The parties must execute a Business Associate Agreement before any PHI is disclosed.", venue: "Massachusetts law governs. The parties consent to exclusive jurisdiction in the state and federal courts located in the Commonwealth of Massachusetts. A waiver is effective only in a signed writing, and waiving one breach does not waive another.", signature: "The parties may execute the Agreement in counterparts, including by electronic signature. Complete every required agreement detail before adding the counterparty signature."
+          sections: "Document sections", label: "Mutual NDA · Section", of: "of", prev: "← Previous", review: "Mark reviewed & continue", reviewed: "Reviewed · Continue", reset: "Reset Matter (start fresh)", resetDone: "Matter cleared. Starting fresh.", guide: "NDA document guide", limit: "Answers are limited to this agreement’s text.", placeholder: "Ask about confidentiality, term, venue…", hello: "I’ll help you review this agreement section by section. Ask a question, or use one of the prompts below.", quick: ["How long does it last?", "Where are disputes heard?", "Can PHI be shared?"], finalLabel: "Final step · Signer copy", finalTitle: "Complete the agreement and sign", finalIntro: "All sections have been reviewed. Complete every agreement detail and add the counterparty signer’s typed signature.", effectiveDate: "Effective date", iecState: "IEC state of incorporation", party: "Counterparty legal name", entityTypeState: "Counterparty entity type and state", address: "Counterparty principal address", purposeLabel: "Purpose", printed: "Counterparty signer’s printed name", date: "Signature date", title: "Signer title (optional)", typed: "Typed signature", typedPlaceholder: "Type your full legal name", download: "Sign agreement & open demo", downloadCopy: "Download signed copy (PDF)", email: "Signer email for the executed copy", sending: "Signing and sending the executed copies…", sendFailed: "The executed copy could not be delivered. Nothing was emailed and the demo stays closed — check your connection and sign again.", fine: "When you sign and submit, the executed NDA is recorded by IEC, Inc., and an executed PDF copy is emailed to IEC at info@iecincglobal.com and to you at the email address above. You can also download the signed PDF for your own records.", ready: "Agreement signed and recorded. An executed PDF copy was emailed to IEC and to your email address. The MEDEXEC demo is open below.", changed: "Agreement details changed. Sign again to reopen the demo.", missing: "Complete every required agreement and signature field before opening the demo.", incompleteReview: "Review every section before signing.", fallback: "I can only answer from this agreement. Try asking about the term, exclusions, permitted access, required disclosure, PHI, Massachusetts venue, return or destruction, or signatures.", term: "The Agreement continues for two years from the Effective Date. Sections 1–4 and 6 survive for two years from each disclosure. Trade-secret duties survive for as long as the information remains a trade secret.", exclude: "The agreement excludes information that becomes public without breach, was already known without a confidentiality duty and can be documented, is independently developed without use of the disclosed information, or is rightfully received from a third party without a confidentiality duty.", access: "Access is limited to the receiving party’s and its affiliates’ employees, contractors, and professional advisors who need the information for the Purpose and are bound by obligations at least as protective as this Agreement.", purpose: "Confidential Information may be used only for the completed Purpose stated by the parties.", disclosure: "If disclosure is legally required, the receiving party must, when legally permitted, promptly notify the disclosing party, cooperate to seek confidential treatment, and disclose only the legal minimum.", return: "On written request or when discussions end, Confidential Information must be returned or destroyed, except for one archival copy kept for legal compliance.", owner: "The Agreement grants no intellectual-property license or right. Neither party is obligated to enter a further agreement or transaction.", phi: "The Agreement does not authorize disclosure of protected health information. The parties must execute a Business Associate Agreement before any PHI is disclosed.", venue: "Massachusetts law governs. The parties consent to exclusive jurisdiction in the state and federal courts located in the Commonwealth of Massachusetts. A waiver is effective only in a signed writing, and waiving one breach does not waive another.", signature: "The parties may execute the Agreement in counterparts, including by electronic signature. Complete every required agreement detail before adding the counterparty signature."
         },
         es: {
-          sections: "Secciones del documento", label: "NDA mutuo · Sección", of: "de", prev: "← Anterior", review: "Marcar revisada y continuar", reviewed: "Revisada · Continuar", reset: "Restablecer asunto (empezar de nuevo)", resetDone: "Asunto borrado. Empezando de nuevo.", guide: "Guía del documento NDA", limit: "Las respuestas se limitan al texto de este acuerdo.", placeholder: "Pregunte sobre confidencialidad, plazo, jurisdicción…", hello: "Le ayudaré a revisar este acuerdo sección por sección. Haga una pregunta o use una de las opciones siguientes.", quick: ["¿Cuánto dura?", "¿Dónde se resuelven disputas?", "¿Se puede compartir PHI?"], finalLabel: "Paso final · Copia del firmante", finalTitle: "Complete el acuerdo y firme", finalIntro: "Se revisaron todas las secciones. Complete todos los datos del acuerdo y añada la firma escrita del firmante de la contraparte.", effectiveDate: "Fecha de vigencia", iecState: "Estado de constitución de IEC", party: "Nombre legal de la contraparte", entityTypeState: "Tipo de entidad y estado de la contraparte", address: "Dirección principal de la contraparte", purposeLabel: "Propósito", printed: "Nombre del firmante de la contraparte", date: "Fecha de firma", title: "Cargo del firmante (opcional)", typed: "Firma escrita", typedPlaceholder: "Escriba su nombre legal completo", download: "Firmar acuerdo y abrir demo", downloadCopy: "Descargar copia firmada", fine: "Los datos ingresados permanecen en esta sesión del navegador y no se transmiten.", ready: "Acuerdo firmado. La demo de MEDEXEC está abierta abajo.", changed: "Los datos del acuerdo cambiaron. Firme de nuevo para reabrir la demo.", missing: "Complete todos los campos obligatorios del acuerdo y la firma antes de abrir la demo.", incompleteReview: "Revise todas las secciones antes de firmar.", fallback: "Solo puedo responder usando este acuerdo. Pregunte sobre el plazo, exclusiones, acceso permitido, divulgación legal, PHI, jurisdicción de Massachusetts, devolución o destrucción, o firmas.", term: "El Acuerdo continúa durante dos años desde la Fecha de Vigencia. Las Secciones 1–4 y 6 sobreviven durante dos años desde cada divulgación. Los deberes sobre secretos comerciales sobreviven mientras la información siga siendo un secreto comercial.", exclude: "Se excluye la información que se hace pública sin incumplimiento, que ya se conocía sin deber de confidencialidad y puede documentarse, que se desarrolla independientemente o que se recibe legítimamente de un tercero sin deber de confidencialidad.", access: "El acceso se limita a empleados, contratistas y asesores profesionales de la parte receptora y sus afiliadas que necesiten la información para el Propósito y estén sujetos a deberes al menos tan protectores como este Acuerdo.", purpose: "La Información Confidencial solo puede usarse para el Propósito completado por las partes.", disclosure: "Si la ley exige divulgar, la parte receptora debe, cuando la ley lo permita, avisar de inmediato, cooperar para procurar trato confidencial y divulgar solo el mínimo legal.", return: "A solicitud escrita o al terminar las conversaciones, la Información Confidencial debe devolverse o destruirse, salvo una copia archivada para cumplimiento legal.", owner: "El Acuerdo no concede ninguna licencia ni derecho de propiedad intelectual. Ninguna parte está obligada a celebrar otro acuerdo o transacción.", phi: "El Acuerdo no autoriza divulgar información médica protegida. Las partes deben firmar un Acuerdo de Asociado Comercial antes de divulgar PHI.", venue: "Rige la ley de Massachusetts. Las partes aceptan jurisdicción exclusiva de los tribunales estatales y federales de Massachusetts. Una renuncia solo es efectiva por escrito y firmada; renunciar a un incumplimiento no renuncia a otro.", signature: "Las partes pueden firmar el Acuerdo en ejemplares separados, incluso con firma electrónica. Complete todos los datos obligatorios antes de añadir la firma de la contraparte."
+          sections: "Secciones del documento", label: "NDA mutuo · Sección", of: "de", prev: "← Anterior", review: "Marcar revisada y continuar", reviewed: "Revisada · Continuar", reset: "Restablecer asunto (empezar de nuevo)", resetDone: "Asunto borrado. Empezando de nuevo.", guide: "Guía del documento NDA", limit: "Las respuestas se limitan al texto de este acuerdo.", placeholder: "Pregunte sobre confidencialidad, plazo, jurisdicción…", hello: "Le ayudaré a revisar este acuerdo sección por sección. Haga una pregunta o use una de las opciones siguientes.", quick: ["¿Cuánto dura?", "¿Dónde se resuelven disputas?", "¿Se puede compartir PHI?"], finalLabel: "Paso final · Copia del firmante", finalTitle: "Complete el acuerdo y firme", finalIntro: "Se revisaron todas las secciones. Complete todos los datos del acuerdo y añada la firma escrita del firmante de la contraparte.", effectiveDate: "Fecha de vigencia", iecState: "Estado de constitución de IEC", party: "Nombre legal de la contraparte", entityTypeState: "Tipo de entidad y estado de la contraparte", address: "Dirección principal de la contraparte", purposeLabel: "Propósito", printed: "Nombre del firmante de la contraparte", date: "Fecha de firma", title: "Cargo del firmante (opcional)", typed: "Firma escrita", typedPlaceholder: "Escriba su nombre legal completo", download: "Firmar acuerdo y abrir demo", downloadCopy: "Descargar copia firmada (PDF)", email: "Correo del firmante para la copia ejecutada", sending: "Firmando y enviando las copias ejecutadas…", sendFailed: "La copia ejecutada no pudo entregarse. No se envió ningún correo y la demo permanece cerrada: verifique su conexión y firme de nuevo.", fine: "Al firmar y enviar, el NDA ejecutado queda registrado por IEC, Inc., y se envía una copia ejecutada en PDF por correo a IEC a info@iecincglobal.com y a usted a la dirección indicada arriba. También puede descargar el PDF firmado para sus registros.", ready: "Acuerdo firmado y registrado. Se envió una copia ejecutada en PDF por correo a IEC y a su dirección. La demo de MEDEXEC está abierta abajo.", changed: "Los datos del acuerdo cambiaron. Firme de nuevo para reabrir la demo.", missing: "Complete todos los campos obligatorios del acuerdo y la firma antes de abrir la demo.", incompleteReview: "Revise todas las secciones antes de firmar.", fallback: "Solo puedo responder usando este acuerdo. Pregunte sobre el plazo, exclusiones, acceso permitido, divulgación legal, PHI, jurisdicción de Massachusetts, devolución o destrucción, o firmas.", term: "El Acuerdo continúa durante dos años desde la Fecha de Vigencia. Las Secciones 1–4 y 6 sobreviven durante dos años desde cada divulgación. Los deberes sobre secretos comerciales sobreviven mientras la información siga siendo un secreto comercial.", exclude: "Se excluye la información que se hace pública sin incumplimiento, que ya se conocía sin deber de confidencialidad y puede documentarse, que se desarrolla independientemente o que se recibe legítimamente de un tercero sin deber de confidencialidad.", access: "El acceso se limita a empleados, contratistas y asesores profesionales de la parte receptora y sus afiliadas que necesiten la información para el Propósito y estén sujetos a deberes al menos tan protectores como este Acuerdo.", purpose: "La Información Confidencial solo puede usarse para el Propósito completado por las partes.", disclosure: "Si la ley exige divulgar, la parte receptora debe, cuando la ley lo permita, avisar de inmediato, cooperar para procurar trato confidencial y divulgar solo el mínimo legal.", return: "A solicitud escrita o al terminar las conversaciones, la Información Confidencial debe devolverse o destruirse, salvo una copia archivada para cumplimiento legal.", owner: "El Acuerdo no concede ninguna licencia ni derecho de propiedad intelectual. Ninguna parte está obligada a celebrar otro acuerdo o transacción.", phi: "El Acuerdo no autoriza divulgar información médica protegida. Las partes deben firmar un Acuerdo de Asociado Comercial antes de divulgar PHI.", venue: "Rige la ley de Massachusetts. Las partes aceptan jurisdicción exclusiva de los tribunales estatales y federales de Massachusetts. Una renuncia solo es efectiva por escrito y firmada; renunciar a un incumplimiento no renuncia a otro.", signature: "Las partes pueden firmar el Acuerdo en ejemplares separados, incluso con firma electrónica. Complete todos los datos obligatorios antes de añadir la firma de la contraparte."
         }
       };
 
@@ -1085,7 +1086,7 @@ body.door-lock{overflow:hidden}
       var chatLog = document.getElementById("chat-log");
       var signaturePanel = document.getElementById("signature-panel");
       var agreementFieldIds = ["effective-date", "iec-state", "party-name", "entity-type-state", "counterparty-address", "agreement-purpose"];
-      var signerFieldIds = ["printed-name", "signature-date", "signer-title", "typed-signature"];
+      var signerFieldIds = ["printed-name", "signature-date", "signer-title", "typed-signature", "signer-email"];
 
       function getAgreementData() {
         return {
@@ -1166,6 +1167,7 @@ body.door-lock{overflow:hidden}
         document.getElementById("counterparty-address-label").textContent = t.address;
         document.getElementById("agreement-purpose-label").textContent = t.purposeLabel;
         document.getElementById("printed-label").textContent = t.printed;
+        document.getElementById("signer-email-label").textContent = t.email;
         document.getElementById("date-label").textContent = t.date;
         document.getElementById("title-label").textContent = t.title;
         document.getElementById("typed-label").textContent = t.typed;
@@ -1248,6 +1250,7 @@ body.door-lock{overflow:hidden}
         document.getElementById("product-demo").classList.remove("visible");
         document.getElementById("product-demo").hidden = true;
         document.getElementById("download-copy").hidden = true;
+        signedPdf = null;
         document.getElementById("signature-form").reset();
         document.getElementById("ask-input").value = "";
         document.getElementById("form-status").textContent = "";
@@ -1276,12 +1279,15 @@ body.door-lock{overflow:hidden}
 
       function iecSignatureBlock(data) {
         // IEC's signature is pre-applied in the website: every executed copy
-        // goes out with both signatures.
+        // goes out with both signatures. The date is a token: the server
+        // replaces it with the actual date the executed copy is issued —
+        // never with the client-entered Effective Date.
         return '<div><h3>International Empire Consultants, Inc.</h3>'
-          + '<p>Signature: <em>Mohammed M. Morgan</em></p>'
-          + '<p>Name: Mohammed M. Morgan</p>'
+          + '<p>(Pre-signed by IEC)</p>'
+          + '<p>Signature: <em>Mohammed Morgan, MD</em></p>'
+          + '<p>Name: Mohammed Morgan, MD</p>'
           + '<p>Title: Founder &amp; CEO</p>'
-          + '<p>Date: ' + escapeHtml(data.effectiveDate) + '</p></div>';
+          + '<p>Date: [IEC EXECUTION DATE]</p></div>';
       }
 
       function buildSignedHtml(data) {
@@ -1295,15 +1301,21 @@ body.door-lock{overflow:hidden}
         return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MEDEXEC Mutual Non-Disclosure Agreement</title></head><body><header><h1>Mutual Non-Disclosure Agreement</h1><p>International Empire Consultants, Inc. and ' + escapeHtml(data.party) + '</p></header>' + docSections + signatureBlock + '</body></html>';
       }
 
-      function downloadDraft(data) {
-        var html = buildSignedHtml(data);
+      // The executed copy is a PDF generated and recorded by the server;
+      // a successful submit returns its exact bytes, and this downloads
+      // them — the same PDF that was emailed to IEC and to the signer.
+      var signedPdf = null;
 
-        var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      function downloadSignedPdf() {
+        if (!signedPdf) return;
+        var binary = atob(signedPdf.base64);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        var blob = new Blob([bytes], { type: "application/pdf" });
         var url = URL.createObjectURL(blob);
         var link = document.createElement("a");
-        var safeName = data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "signer";
         link.href = url;
-        link.download = "medexec-mutual-nda-signed-" + safeName + ".html";
+        link.download = signedPdf.fileName;
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -1317,6 +1329,7 @@ body.door-lock{overflow:hidden}
           if (agreementFieldIds.indexOf(fieldId) !== -1) renderDocument();
           if (!signedData) return;
           signedData = null;
+          signedPdf = null;
           document.getElementById("download-copy").hidden = true;
           document.getElementById("product-demo").classList.remove("visible");
           document.getElementById("product-demo").hidden = true;
@@ -1459,48 +1472,72 @@ body.door-lock{overflow:hidden}
         data.date = document.getElementById("signature-date").value;
         data.title = document.getElementById("signer-title").value.trim();
         data.signature = document.getElementById("typed-signature").value.trim();
-        if (!data.effectiveDate || !data.iecState || !data.party || !data.entityTypeState || !data.address || !data.purpose || !data.name || !data.date || !data.signature) {
+        data.email = document.getElementById("signer-email").value.trim();
+        if (!data.effectiveDate || !data.iecState || !data.party || !data.entityTypeState || !data.address || !data.purpose || !data.name || !data.date || !data.signature || !data.email) {
           status.textContent = t.missing;
           return;
         }
-        signedData = data;
-        // Send the executed copy (both signatures) to the team inbox.
-        // Fire-and-forget: the signer keeps their download and the demo
-        // unlocks even if this call fails.
-        try {
-          fetch("https://app.getmedexec.com/api/nda/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              product: "medexec",
-              effectiveDate: data.effectiveDate,
-              iecState: data.iecState,
-              party: data.party,
-              entityTypeState: data.entityTypeState,
-              address: data.address,
-              purpose: data.purpose,
-              name: data.name,
-              title: data.title,
-              date: data.date,
-              signature: data.signature,
-              documentHtml: buildSignedHtml(data)
-            })
-          }).catch(function () {});
-        } catch (e) {}
-        status.textContent = t.ready;
-        document.getElementById("download-copy").hidden = false;
-        var productDemo = document.getElementById("product-demo");
-        productDemo.hidden = false;
-        productDemo.classList.add("visible");
-        demoCurrent = 0;
-        demoCompleted = {};
-        demoReviewed = false;
-        renderDemo();
-        productDemo.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+        // No silent failure: success is shown and the demo unlocks ONLY
+        // after the server confirms it recorded the signing and emailed
+        // the executed PDF to IEC and to the signer. Any failure keeps
+        // the demo closed and says so, with signing again as the retry.
+        var submitButton = document.getElementById("download-signed");
+        submitButton.disabled = true;
+        status.textContent = t.sending;
+        fetch("https://app.getmedexec.com/api/nda/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            product: "medexec",
+            effectiveDate: data.effectiveDate,
+            iecState: data.iecState,
+            party: data.party,
+            entityTypeState: data.entityTypeState,
+            address: data.address,
+            purpose: data.purpose,
+            name: data.name,
+            title: data.title,
+            date: data.date,
+            signature: data.signature,
+            signerEmail: data.email,
+            documentHtml: buildSignedHtml(data)
+          })
+        }).then(function (response) {
+          return response.json().catch(function () { return null; }).then(function (body) {
+            return { ok: response.ok && !!body && body.ok === true, body: body };
+          });
+        }).then(function (result) {
+          submitButton.disabled = false;
+          if (!result.ok || !result.body.pdfBase64) {
+            signedData = null;
+            signedPdf = null;
+            document.getElementById("download-copy").hidden = true;
+            status.textContent = t.sendFailed;
+            return;
+          }
+          signedData = data;
+          signedPdf = { base64: result.body.pdfBase64, fileName: result.body.fileName };
+          status.textContent = t.ready;
+          document.getElementById("download-copy").hidden = false;
+          var productDemo = document.getElementById("product-demo");
+          productDemo.hidden = false;
+          productDemo.classList.add("visible");
+          demoCurrent = 0;
+          demoCompleted = {};
+          demoReviewed = false;
+          renderDemo();
+          productDemo.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+        }).catch(function () {
+          submitButton.disabled = false;
+          signedData = null;
+          signedPdf = null;
+          document.getElementById("download-copy").hidden = true;
+          status.textContent = t.sendFailed;
+        });
       });
 
       document.getElementById("download-copy").addEventListener("click", function () {
-        if (signedData) downloadDraft(signedData);
+        downloadSignedPdf();
       });
 
       var now = new Date();
