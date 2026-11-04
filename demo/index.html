@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>MEDEXEC Demo — Live Workflow | getmedexec.com</title>
+<meta name="description" content="MEDEXEC demo portal: a live, screen-by-screen walkthrough of the MEDEXEC workflow from intake to the expert report, on synthetic data. Access is for those who have signed the MEDEXEC NDA.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --paper: #f4f6f5;
+    --surface: #ffffff;
+    --ink: #102b32;
+    --muted: #506268;
+    --faint: #d8dfdd;
+    --rule: #b9c6c3;
+    --teal: #0b6f70;
+    --teal-dark: #074b4c;
+    --teal-soft: #dcefee;
+    --navy: #071f3d;
+    --cyan: #00a8cf;
+    --brand-green: #22b878;
+    --hero-muted: #c7d3df;
+    --coral: #d45b3f;
+    --yellow: #f0c84b;
+    --yellow-soft: #fff3bd;
+    --good: #176b51;
+    --shadow: 0 16px 44px rgba(16, 43, 50, .1);
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: Helvetica, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #091619;
+      --surface: #102328;
+      --ink: #edf5f3;
+      --muted: #afc2c0;
+      --faint: #263e42;
+      --rule: #3a5558;
+      --teal: #65c5c0;
+      --teal-dark: #95dfda;
+      --teal-soft: #163a3d;
+      --coral: #ff9478;
+      --yellow: #eccd68;
+      --yellow-soft: #3d3519;
+      --good: #78d7b5;
+      --shadow: 0 20px 54px rgba(0, 0, 0, .32);
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, textarea { font: inherit; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+  .wrap { max-width: 1220px; margin: 0 auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
+
+  .nav {
+    max-width: 1220px; margin: 0 auto;
+    padding: .7rem clamp(1rem, 4vw, 2.5rem);
+    display: flex; align-items: center; justify-content: flex-end; gap: 1.5rem;
+    border-bottom: 1px solid #d8dfdd; background: #fff;
+    box-shadow: 0 0 0 100vmax #fff; clip-path: inset(0 -100vmax);
+    color: var(--navy); font-size: .88rem; font-weight: 500;
+  }
+  .nav a { text-decoration: none; }
+  .nav a:hover { color: var(--teal); }
+  .nav-brand { margin-right: auto; flex: 0 0 auto; }
+  .nav-brand img { display: block; width: 9.5rem; height: auto; object-fit: contain; background: #fff; }
+  .nav .btn { padding: .5rem 1.1rem; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    min-height: 3rem; padding: .7rem 1.4rem;
+    background: var(--teal); color: #fff; border: 1px solid var(--teal);
+    border-radius: 6px; font-weight: 700; cursor: pointer; text-decoration: none;
+  }
+  .btn:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
+  .btn.secondary { background: transparent; color: var(--teal-dark); border-color: var(--rule); }
+  .btn.secondary:hover { border-color: var(--teal); color: var(--teal); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn.small { min-height: 2.4rem; padding: .45rem 1rem; font-size: .9rem; }
+  .text-link { color: var(--teal-dark); font-weight: 600; cursor: pointer; background: none; border: none; padding: 0; text-decoration: underline; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: .6rem; margin: 0 0 1.2rem;
+    color: var(--teal-dark); font-weight: 600; font-size: .82rem;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  .eyebrow::before { content: ""; width: 2rem; height: 2px; background: var(--coral); }
+  h1, h2, h3 { text-wrap: balance; }
+  h1 { margin: 0 0 1rem; font: 600 clamp(2.2rem, 5vw, 3.6rem)/1.02 var(--serif); letter-spacing: -.03em; }
+  h1 em { color: var(--teal); font-style: normal; }
+  h2 { font: 600 clamp(1.5rem, 3vw, 2.1rem)/1.15 var(--serif); letter-spacing: -.02em; margin: 0 0 .8rem; }
+  h3 { margin: 0 0 .5rem; font-size: 1.05rem; }
+  .lede { color: var(--muted); max-width: 640px; font-size: 1.05rem; }
+
+  .hero-band {
+    background: var(--navy); color: #fff;
+    box-shadow: 0 0 0 100vmax var(--navy); clip-path: inset(0 -100vmax);
+    padding-block: clamp(2.8rem, 6vw, 4.5rem);
+  }
+  .hero-band .eyebrow { color: var(--brand-green); }
+  .hero-band .eyebrow::before { background: var(--cyan); }
+  .hero-band h1 em { color: var(--cyan); }
+  .hero-band .lede { color: var(--hero-muted); }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.6rem; }
+  .hero-band .btn { background: #06172f; border-color: #637594; }
+  .hero-band .btn:hover { background: #0d2a50; border-color: #fff; }
+  .hero-band .btn.primary { background: var(--teal); border-color: var(--teal); }
+  .hero-band .btn.primary:hover { background: var(--teal-dark); }
+
+  .section { padding-block: clamp(2.2rem, 5vw, 3.6rem); }
+  .card {
+    background: var(--surface); border: 1px solid var(--faint); border-radius: 10px;
+    box-shadow: var(--shadow); padding: clamp(1.2rem, 3vw, 2rem);
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  @media (max-width: 820px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .stage-teaser { list-style: none; margin: 1.4rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 900px) { .stage-teaser { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .stage-teaser { grid-template-columns: 1fr; } }
+  .stage-teaser li { background: var(--surface); border: 1px solid var(--faint); border-radius: 10px; padding: 1rem 1.1rem; }
+  .stage-teaser .num { font: 700 .8rem var(--sans); color: var(--teal); letter-spacing: .08em; }
+  .stage-teaser h3 { margin-top: .35rem; }
+  .stage-teaser p { margin: 0; color: var(--muted); font-size: .92rem; }
+
+  /* forms */
+  .form-card { max-width: 520px; margin: 0 auto; }
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: .35rem; }
+  .field input {
+    width: 100%; padding: .65rem .8rem; border: 1px solid var(--rule); border-radius: 6px;
+    background: var(--surface); color: var(--ink);
+  }
+  .field .hint { font-size: .82rem; color: var(--muted); margin-top: .3rem; }
+  .form-msg { border-radius: 8px; padding: .8rem 1rem; font-size: .93rem; margin-bottom: 1rem; }
+  .form-msg.error { background: #fdeceb; color: #7c2113; border: 1px solid #f2b8ae; }
+  .form-msg.ok { background: var(--teal-soft); color: var(--teal-dark); border: 1px solid var(--teal); }
+  @media (prefers-color-scheme: dark) { .form-msg.error { background: #3a1710; color: #ffb59f; } }
+  .nda-note {
+    background: var(--yellow-soft); border: 1px solid var(--yellow); border-radius: 8px;
+    padding: .8rem 1rem; font-size: .9rem; margin-bottom: 1.2rem;
+  }
+
+  /* demo home */
+  .case-card { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .chip {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .22rem .7rem; border-radius: 999px; font-size: .78rem; font-weight: 700; letter-spacing: .03em;
+  }
+  .chip.synth { background: var(--yellow-soft); color: #6b5410; border: 1px solid var(--yellow); }
+  .chip.teal { background: var(--teal-soft); color: var(--teal-dark); }
+  .chip.good { background: #e2f4ec; color: var(--good); border: 1px solid var(--good); }
+  .chip.warn { background: #fdeceb; color: #7c2113; border: 1px solid #f2b8ae; }
+  .chip.lock { background: var(--faint); color: var(--muted); }
+  @media (prefers-color-scheme: dark) {
+    .chip.synth { color: var(--yellow); }
+    .chip.good { background: #123528; }
+    .chip.warn { background: #3a1710; color: #ffb59f; }
+  }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%) translateY(2rem);
+    background: var(--ink); color: var(--paper); padding: .8rem 1.2rem; border-radius: 8px;
+    font-size: .92rem; font-weight: 600; opacity: 0; pointer-events: none; transition: all .3s ease; z-index: 60; max-width: 90vw; text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .footer { padding: 2rem clamp(1rem, 4vw, 2.5rem) 3rem; border-top: 1px solid var(--faint); color: var(--muted); font-size: .78rem; }
+  .footer-inner { max-width: 1220px; margin: 0 auto; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .muted { color: var(--muted); }
+  .small { font-size: .88rem; }
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="nav-brand" href="../" aria-label="MEDEXEC home"><img src="../logo.png" alt="MEDEXEC — Evidence. Verified."></a>
+  <a href="../">getmedexec.com</a>
+  <span id="nav-user" class="muted" hidden></span>
+  <button class="btn small" type="button" id="nav-auth-btn">Sign In</button>
+</header>
+
+<main>
+  <!-- ============ VIEW: LANDING ============ -->
+  <section id="view-landing">
+    <div class="hero-band">
+      <div class="wrap">
+        <p class="eyebrow">MEDEXEC Demo Portal</p>
+        <h1>The workflow, <em>screen by screen.</em></h1>
+        <p class="lede">A live walkthrough of MEDEXEC — from a 445-page scanned record at intake to the attested expert report — on the exact MEDEXEC dashboard, with synthetic cases. No real patient data is used anywhere in this demo.</p>
+        <div class="hero-actions">
+          <button class="btn primary" type="button" data-goto="signup">Create your demo access</button>
+          <button class="btn" type="button" data-goto="login">Sign in</button>
+        </div>
+        <p class="small" style="color:var(--hero-muted);max-width:620px;margin-top:1.2rem;">Demo access is available to those who have signed the MEDEXEC Mutual Confidentiality Agreement (NDA). If you received a signup email after signing, create your access with that same email address.</p>
+      </div>
+    </div>
+    <div class="wrap section">
+      <h2>Inside the demo</h2>
+      <p class="lede">Six stages, exactly as the platform runs them — in the live product, not a mock-up.</p>
+      <p class="lede" style="max-width:760px;">Intake &rarr; Extraction &rarr; Pertinent Report &rarr; Expert Opinion Agent &rarr; Expert Report Agent &rarr; Final Report + Export — the full pipeline, in the product itself, on synthetic matters staged at each step so you can open any stage and inspect it.</p>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: SIGNUP ============ -->
+  <section id="view-signup" hidden>
+    <div class="wrap section">
+      <div class="card form-card">
+        <p class="eyebrow">Demo Portal</p>
+        <h2>Create your demo access</h2>
+        <div class="nda-note">Demo access is for those who have <strong>signed the MEDEXEC Mutual Confidentiality Agreement (NDA)</strong>. Use the email address your signed NDA and signup email were sent to — access is approved per email address.</div>
+        <div class="form-msg error" id="signup-msg" hidden></div>
+        <form id="signup-form" novalidate>
+          <div class="field">
+            <label for="su-name">Full name</label>
+            <input id="su-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="su-email">Email</label>
+            <input id="su-email" name="email" type="email" autocomplete="email" required>
+            <p class="hint">Must match the email on your signed NDA.</p>
+          </div>
+          <div class="field">
+            <label for="su-password">Password</label>
+            <input id="su-password" name="password" type="password" autocomplete="new-password" required>
+            <p class="hint">At least 8 characters.</p>
+          </div>
+          <div class="field">
+            <label for="su-confirm">Confirm password</label>
+            <input id="su-confirm" name="confirm" type="password" autocomplete="new-password" required>
+          </div>
+          <button class="btn" type="submit" style="width:100%;">Create access</button>
+        </form>
+        <p class="small muted" style="margin-top:1rem;">Already created your access? <button class="text-link" type="button" data-goto="login">Sign in</button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: LOGIN ============ -->
+  <section id="view-login" hidden>
+    <div class="wrap section">
+      <div class="card form-card">
+        <p class="eyebrow">Demo Portal</p>
+        <h2>Sign in</h2>
+        <div class="form-msg error" id="login-msg" hidden></div>
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label for="li-email">Email</label>
+            <input id="li-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="li-password">Password</label>
+            <input id="li-password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="btn" type="submit" style="width:100%;">Sign in to the demo</button>
+        </form>
+        <p class="small muted" style="margin-top:1rem;">Signed the NDA but not created access yet? <button class="text-link" type="button" data-goto="signup">Create your demo access</button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: HANDOFF (signed-in) ============ -->
+  <section id="view-home" hidden>
+    <div class="wrap section">
+      <div class="card form-card" style="max-width:640px;">
+        <p class="eyebrow">Demo Portal</p>
+        <h2>You&rsquo;re signed in.</h2>
+        <p class="lede" style="font-size:1rem;">The demo is the <strong>exact MEDEXEC dashboard as live HTML</strong> — the same layout, screens, and labels as the application — running a guided showing of the exact workflow on synthetic files: intake &rarr; per-page OCR &rarr; extraction with citations and conflicts &rarr; Pertinent Report &rarr; Expert Opinion (two inputs, AMA flag, attestation, export gate) &rarr; Expert Report Agent with self-audit &rarr; final report and export.</p>
+        <p><span class="chip synth">SYNTHETIC DATA ONLY</span> <span class="chip teal">NO DATABASE — SELF-CONTAINED HTML</span></p>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.2rem;">
+          <a class="btn" id="enter-demo" href="#" rel="nofollow">Open the MEDEXEC demo &rarr;</a>
+          <button class="btn secondary" type="button" id="sign-out-1">Sign out</button>
+        </div>
+        <p class="small muted" id="demo-gate-note" style="margin-top:1rem;" hidden>Your access is confirmed — the demo opens from the button above.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© 2026 International Empire Consultants, Inc. All rights reserved. · Developed by IEC, Inc.</span>
+    <span><a href="mailto:info@getmedexec.com">info@getmedexec.com</a> · MEDEXEC Demo Portal — synthetic data only</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   MEDEXEC Demo Portal — gate + live workflow (v1, for DrMorgan's review)
+   Static property: the gate is a client-side simulation backed by the
+   allowlist config below. Real per-user auth is the named next step;
+   the allowlist mechanics (approved emails, one account per email) are
+   implemented as real code so approved-list changes are data-only.
+   ===================================================================== */
+
+/* ---- Approved emails: NDA signers who may create demo access.
+        DrMorgan supplies the real list; add one entry per signer. ---- */
+const DEMO_ALLOWLIST = [
+  { email: "demo@medexec.example", name: "Demo Reviewer" }
+];
+
+/* ---- Seed account so the portal can be reviewed end to end.
+        The seed email is on the allowlist above. ---- */
+const DEMO_SEED_ACCOUNTS = [
+  { name: "Demo Reviewer", email: "demo@medexec.example", password: "MedexecDemo#2026" }
+];
+
+/* ---- Storage: localStorage in the browser, in-memory under test ---- */
+const DemoStore = (() => {
+  let mem = {};
+  const hasLS = typeof localStorage !== "undefined";
+  return {
+    get(k) {
+      if (hasLS) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+      return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
+    },
+    set(k, v) {
+      if (hasLS) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode */ } }
+      else { mem[k] = v; }
+    },
+    remove(k) {
+      if (hasLS) { try { localStorage.removeItem(k); } catch (e) { /* noop */ } }
+      else { delete mem[k]; }
+    },
+    _reset() { mem = {}; }
+  };
+})();
+
+const ACCOUNTS_KEY = "medexec_demo_accounts";
+const SESSION_KEY = "medexec_demo_session";
+
+function normalizeEmail(email) { return String(email || "").trim().toLowerCase(); }
+
+function isAllowlisted(email) {
+  const e = normalizeEmail(email);
+  return DEMO_ALLOWLIST.some(a => normalizeEmail(a.email) === e);
+}
+
+function loadAccounts() {
+  const stored = DemoStore.get(ACCOUNTS_KEY);
+  const accounts = Array.isArray(stored) ? stored.slice() : [];
+  for (const seed of DEMO_SEED_ACCOUNTS) {
+    if (!accounts.some(a => normalizeEmail(a.email) === normalizeEmail(seed.email))) {
+      accounts.push({ name: seed.name, email: normalizeEmail(seed.email), password: seed.password, seed: true });
+    }
+  }
+  return accounts;
+}
+
+function saveAccounts(accounts) { DemoStore.set(ACCOUNTS_KEY, accounts); }
+
+function findAccount(email) {
+  const e = normalizeEmail(email);
+  return loadAccounts().find(a => normalizeEmail(a.email) === e) || null;
+}
+
+/* Signup: allowed only for allowlisted emails; one account per email. */
+function demoSignup(name, email, password, confirm) {
+  name = String(name || "").trim();
+  email = normalizeEmail(email);
+  if (!name) return { ok: false, error: "Enter your full name." };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: "Enter a valid email address." };
+  if (!isAllowlisted(email)) {
+    return { ok: false, error: "This email is not on the approved demo list yet. Demo access follows a signed MEDEXEC NDA — if you signed and received a signup email, check the address matches your NDA exactly, or contact info@getmedexec.com." };
+  }
+  if (findAccount(email) && !findAccount(email).seedPending) {
+    const existing = findAccount(email);
+    if (existing && existing.password) return { ok: false, error: "An account with this email already exists. Sign in instead." };
+  }
+  if (String(password || "").length < 8) return { ok: false, error: "Password must be at least 8 characters." };
+  if (password !== confirm) return { ok: false, error: "Passwords do not match." };
+  const accounts = loadAccounts().filter(a => normalizeEmail(a.email) !== email);
+  accounts.push({ name, email, password: String(password) });
+  saveAccounts(accounts);
+  return { ok: true, account: { name, email } };
+}
+
+function demoLogin(email, password) {
+  const account = findAccount(email);
+  if (!account) return { ok: false, error: "No demo account exists for this email. If you signed the NDA, create your access first." };
+  if (account.password !== String(password || "")) return { ok: false, error: "Incorrect password for this demo account." };
+  const session = { name: account.name, email: normalizeEmail(account.email) };
+  DemoStore.set(SESSION_KEY, session);
+  return { ok: true, session };
+}
+
+function demoSession() { return DemoStore.get(SESSION_KEY); }
+function demoSignOut() { DemoStore.remove(SESSION_KEY); }
+
+/* Exposed for the node smoke test; harmless in the browser. */
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { DEMO_ALLOWLIST, DEMO_SEED_ACCOUNTS, DemoStore, isAllowlisted, demoSignup, demoLogin, demoSession, demoSignOut, findAccount };
+}
+</script>
+
+
+<script>
+"use strict";
+/* ===== Demo app handoff =====
+   The public site's job ends at this link: the signed-in demo user is
+   handed into the demo — the exact MEDEXEC dashboard as live HTML
+   (demo/app/), fully self-contained, synthetic data only, no database.
+   While DEMO_APP_URL is empty, the handoff button shows a note instead
+   of a dead link. */
+const DEMO_APP_URL = "app/";
+
+/* ===== View router + forms (browser only) ===== */
+if (typeof document !== "undefined") {
+  const VIEWS = ["landing", "signup", "login", "home"];
+  const $ = id => document.getElementById(id);
+
+  function showToast(text) {
+    const t = $("toast");
+    t.textContent = text;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 3400);
+  }
+
+  function refreshNav() {
+    const s = demoSession();
+    const btn = $("nav-auth-btn");
+    const user = $("nav-user");
+    if (s) {
+      user.hidden = false;
+      user.textContent = s.name + " · demo access";
+      btn.textContent = "Sign out";
+    } else {
+      user.hidden = true;
+      btn.textContent = "Sign In";
+    }
+  }
+
+  function showView(name) {
+    for (const v of VIEWS) $("view-" + v).hidden = v !== name;
+    refreshNav();
+    window.scrollTo({ top: 0 });
+  }
+
+  document.addEventListener("click", e => {
+    const g = e.target.closest("[data-goto]");
+    if (g) { showView(g.getAttribute("data-goto")); }
+  });
+
+  $("nav-auth-btn").addEventListener("click", () => {
+    if (demoSession()) { demoSignOut(); showView("landing"); showToast("Signed out of the demo portal."); }
+    else showView("login");
+  });
+
+  function formMsg(id, text) {
+    const m = $(id);
+    m.textContent = text;
+    m.hidden = !text;
+  }
+
+  $("signup-form").addEventListener("submit", e => {
+    e.preventDefault();
+    formMsg("signup-msg", "");
+    const r = demoSignup($("su-name").value, $("su-email").value, $("su-password").value, $("su-confirm").value);
+    if (!r.ok) { formMsg("signup-msg", r.error); return; }
+    const li = demoLogin(r.account.email, $("su-password").value);
+    if (li.ok) { showView("home"); showToast("Demo access created — welcome, " + r.account.name + "."); }
+    else showView("login");
+  });
+
+  $("login-form").addEventListener("submit", e => {
+    e.preventDefault();
+    formMsg("login-msg", "");
+    const r = demoLogin($("li-email").value, $("li-password").value);
+    if (!r.ok) { formMsg("login-msg", r.error); return; }
+    showView("home");
+    showToast("Signed in — welcome back, " + r.session.name + ".");
+  });
+
+  $("sign-out-1").addEventListener("click", () => {
+    demoSignOut();
+    showView("landing");
+    showToast("Signed out of the demo portal.");
+  });
+
+  const enterBtn = $("enter-demo");
+  if (DEMO_APP_URL) {
+    enterBtn.setAttribute("href", DEMO_APP_URL);
+  } else {
+    enterBtn.addEventListener("click", e => {
+      e.preventDefault();
+      $("demo-gate-note").hidden = false;
+    });
+  }
+
+  refreshNav();
+}
+</script>
+</body>
+</html>

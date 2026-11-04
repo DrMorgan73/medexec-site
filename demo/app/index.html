@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>MedExec Demo — Clinical Operations Dashboard (Synthetic Data)</title>
+<style>
+:root{
+  --navy:#101b36;--navy-2:#16234a;--teal:#1e9e86;--teal-dark:#157a68;
+  --bg:#eef2f7;--card:#ffffff;--line:#dce3ec;--ink:#101b36;--ink-soft:#5b6b85;
+  --amber-bg:#fdf3dc;--amber-line:#f0dba0;--danger:#c2453a;
+  --radius:12px;--radius-sm:8px;
+  --serif:'Newsreader',Georgia,'Times New Roman',serif;
+  --sans:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  --shadow-sm:0 1px 2px rgba(16,27,54,.06);--shadow-md:0 4px 16px rgba(16,27,54,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.5}
+a{color:#3457D5}
+.app-shell{display:flex;min-height:100vh}
+.app-sidebar{width:230px;flex:0 0 230px;background:var(--navy);color:#c7d0e3;padding:22px 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--teal-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--serif);font-weight:700;font-size:17px}
+.brand-name{font-family:var(--serif);font-weight:700;font-size:16px;color:#fff;line-height:1.1}
+.brand-tag{font-size:8.5px;letter-spacing:.09em;color:#8ce0ce}
+.nav-link{display:block;padding:9px 10px;border-radius:8px;font-size:13.5px;color:#c7d0e3;text-decoration:none;cursor:pointer;margin-bottom:2px;border:0;background:none;width:100%;text-align:left;font-family:var(--sans)}
+.nav-link:hover{color:#fff}
+.nav-link.active{background:rgba(30,158,134,.16);color:#fff;font-weight:600}
+.pilot-card{background:#132247;border:1px solid #223662;border-radius:9px;padding:10px 12px;font-size:11.5px;color:#9db0d6;margin-top:16px;line-height:1.45}
+.pilot-card .dot{color:var(--teal)}
+.sidebar-foot{margin-top:auto;padding-top:16px}
+.status-light{font-size:11.5px;color:#9db0d6;margin-bottom:12px}
+.status-light .dot{color:var(--teal)}
+.user-row{display:flex;align-items:center;gap:10px}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:0 0 32px}
+.user-name{color:#fff;font-weight:600;font-size:13px;line-height:1.2}
+.user-role{color:#8194ba;font-size:11px;letter-spacing:.05em}
+.signout{margin-top:10px;background:none;border:1px solid #223662;color:#c7d0e3;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;font-family:var(--sans)}
+.app-main{flex:1;padding:26px 34px;min-width:0;padding-bottom:120px}
+.eyebrow{font-size:11px;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase}
+h1.page{font-family:var(--serif);font-size:25px;margin:2px 0 14px}
+h3.card-title{font-family:var(--serif);font-size:17px;margin:2px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-md);margin-bottom:18px}
+.card table thead tr th{font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;color:var(--ink-soft);font-size:11px}
+.data-table td{padding:12px 6px;border-bottom:1px solid #eef1f6;vertical-align:top}
+.sub-line{font-size:11.5px;color:var(--ink-soft)}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600}
+.badge-approved{background:#dff3ee;color:var(--teal-dark)}
+.badge-processing{background:#e6ecfb;color:#3457d5}
+.badge-draft{background:var(--amber-bg);color:#8a6412}
+.badge-conflict{background:#fbe9e7;color:var(--danger)}
+.btn{border:none;border-radius:var(--radius-sm);padding:10px 16px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:background-color .15s,box-shadow .15s,transform .05s,opacity .15s}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn-primary{background:var(--navy);color:#fff;box-shadow:var(--shadow-sm)}
+.btn-primary:hover:not(:disabled){background:var(--navy-2)}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-teal:hover:not(:disabled){background:var(--teal-dark)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.banner-amber{background:var(--amber-bg);border:1px solid var(--amber-line);color:#7a5a12;border-radius:var(--radius-sm);padding:12px 14px;font-size:12.5px;margin-bottom:18px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.stat-card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-sm)}
+.stat-card.qa{border-top-color:#b8860b}
+.stat-label{font-size:10.5px;letter-spacing:.05em;color:var(--ink-soft)}
+.stat-value{font-family:var(--serif);font-size:28px;margin:4px 0 2px}
+.stat-note{font-size:11px;color:var(--ink-soft)}
+.detail-grid{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:start}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #eef1f6;font-size:13px}
+.kv b{font-weight:600;text-align:right}
+.kv span{color:var(--ink-soft)}
+.doc-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #eef1f6;font-size:13px}
+.progress{height:8px;background:#e6ecf3;border-radius:99px;overflow:hidden;margin:8px 0}
+.progress>i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .6s ease}
+.flag-chip{display:inline-block;background:var(--amber-bg);border:1px solid var(--amber-line);color:#8a6412;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:600;margin:2px 4px 2px 0}
+.conflict-box{background:#fdf6ec;border:1px solid var(--amber-line);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;margin:10px 0}
+.finding{padding:10px 0;border-bottom:1px solid #eef1f6;font-size:13.5px}
+.finding .cite{font-size:11.5px;color:var(--ink-soft)}
+.cite-ok{color:var(--teal-dark);font-weight:600}
+.scorecard{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.score-chip{background:#dff3ee;color:var(--teal-dark);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600}
+.report-sec{margin-bottom:16px}
+.report-sec h4{font-family:var(--serif);font-size:15.5px;margin:0 0 6px}
+.report-sec p{font-size:13.5px;margin:0 0 6px;color:#22304d}
+.draft-banner{background:var(--amber-bg);border:1px solid var(--amber-line);color:#8a6412;border-radius:var(--radius-sm);padding:10px 14px;font-weight:600;font-size:13px;margin-bottom:14px;text-align:center;letter-spacing:.03em}
+.approved-banner{background:#dff3ee;border:1px solid #bfe6da;color:var(--teal-dark);border-radius:var(--radius-sm);padding:10px 14px;font-weight:600;font-size:13px;margin-bottom:14px;text-align:center}
+.two-input{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.input-card{border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px;background:#fbfcfe}
+.input-card h5{margin:0 0 4px;font-size:13.5px}
+.input-card p{margin:0;font-size:12.5px;color:var(--ink-soft)}
+.ama-flag{background:#fbe9e7;border:1px solid #f0c4bd;color:#8f2f27;border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;margin:12px 0}
+textarea.opinion-edit{width:100%;min-height:64px;border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px;font-family:var(--sans);font-size:13.5px}
+.activity-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #eef1f6;font-size:13px}
+.activity-row .when{color:var(--ink-soft);font-size:12px;white-space:nowrap}
+.guidebar{position:fixed;left:230px;right:0;bottom:0;background:var(--navy);color:#dfe7f5;padding:12px 34px;display:flex;align-items:center;gap:16px;z-index:50;box-shadow:0 -6px 24px rgba(16,27,54,.25)}
+.guidebar .g-title{font-size:11px;letter-spacing:.07em;color:#8ce0ce;white-space:nowrap}
+.guidebar .g-cap{font-size:13px;flex:1;line-height:1.4}
+.guidebar .g-dots{display:flex;gap:6px}
+.g-dot{width:9px;height:9px;border-radius:50%;background:#33477a;border:0;cursor:pointer;padding:0}
+.g-dot.on{background:var(--teal)}
+.g-dot.done{background:#5b7bc0}
+.guidebar .btn{padding:8px 14px;font-size:12.5px}
+.toast{position:fixed;top:18px;right:18px;background:var(--navy);color:#fff;border-radius:10px;padding:12px 16px;font-size:13px;box-shadow:var(--shadow-md);z-index:99;max-width:360px;display:none}
+.toast.err{background:#7c2d24}
+.lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:24px}
+.lock-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px;max-width:420px;box-shadow:var(--shadow-md);text-align:center}
+.demo-tag{display:inline-block;background:var(--navy);color:#8ce0ce;font-size:10.5px;letter-spacing:.08em;border-radius:999px;padding:3px 10px;margin-bottom:10px}
+@media(max-width:900px){.app-sidebar{display:none}.app-main{padding:18px}.guidebar{left:0}.stat-grid{grid-template-columns:repeat(2,1fr)}.detail-grid,.two-input{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="lockRoot" style="display:none"></div>
+<div id="appRoot" style="display:none">
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div>
+          <div class="brand-name">MedExec</div>
+          <div class="brand-tag">EVIDENCE. VERIFIED.</div>
+        </div>
+      </div>
+      <nav id="sideNav"></nav>
+      <div class="pilot-card"><span class="dot">●</span> INTERNAL PILOT — PHI not yet authorized — see compliance checklist</div>
+      <div class="sidebar-foot">
+        <div class="status-light"><span class="dot">●</span> All systems normal</div>
+        <div class="user-row">
+          <div class="avatar">M</div>
+          <div>
+            <div class="user-name">Mohammed M. Morgan, M.D.</div>
+            <div class="user-role">ADMINISTRATOR</div>
+          </div>
+        </div>
+        <button class="signout" id="signOutBtn" type="button">Sign out</button>
+      </div>
+    </aside>
+    <main class="app-main" id="mainView"></main>
+  </div>
+  <div class="guidebar" id="guidebar"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+"use strict";
+/* ============ DEMO DATA — synthetic only, bundled, no database ============ */
+var HERO_ID = "cmw2oqco40008uvxi1mn012jb";
+var MATTERS = [
+  { id: HERO_ID, subjectLabel: "Synthetic WC Test 001", clientName: "Demo Client — Workers' Compensation", clientReference: "SYNTH-WC-001", matterType: "Workers' Compensation", pageCount: 445, claimNumber: "WC-TEST-2026-001", carrier: "Synthetic Carrier (fictional)", claimantIdentifier: "SYNTHETIC TEST PATIENT", dobA: "03/14/1978", dobB: "03/14/1987", doi: "10/12/2026", jurisdiction: "Massachusetts", attorney: "Demo Counsel LLP (fictional)", updated: "11/04/2026" },
+  { id: "cmw2demo002pertinent", subjectLabel: "Synthetic WC Test 002 — Pertinent Report Ready", clientName: "Demo Client — Workers' Compensation", clientReference: "SYNTH-WC-002", matterType: "Workers' Compensation", pageCount: 212, claimNumber: "WC-TEST-2026-002", carrier: "Synthetic Carrier (fictional)", claimantIdentifier: "SYNTHETIC TEST PATIENT B", dobA: "07/02/1985", dobB: null, doi: "09/03/2026", jurisdiction: "Massachusetts", attorney: "Demo Counsel LLP (fictional)", updated: "11/03/2026" },
+  { id: "cmw2demo003opinion", subjectLabel: "Synthetic PI Test 003 — Opinion Draft, AMA Flag", clientName: "Demo Client — Personal Injury", clientReference: "SYNTH-PI-003", matterType: "Personal Injury", pageCount: 168, claimNumber: "PI-TEST-2026-003", carrier: "Synthetic Carrier (fictional)", claimantIdentifier: "SYNTHETIC TEST PATIENT C", dobA: "11/27/1990", dobB: null, doi: "08/19/2026", jurisdiction: "Massachusetts", attorney: "Demo Counsel LLP (fictional)", updated: "11/04/2026" },
+  { id: "cmw2demo004approved", subjectLabel: "Synthetic WC Test 004 — Approved Example", clientName: "Demo Client — Workers' Compensation", clientReference: "SYNTH-WC-004", matterType: "Workers' Compensation", pageCount: 320, claimNumber: "WC-TEST-2026-004", carrier: "Synthetic Carrier (fictional)", claimantIdentifier: "SYNTHETIC TEST PATIENT D", dobA: "05/09/1972", dobB: null, doi: "06/11/2026", jurisdiction: "Massachusetts", attorney: "Demo Counsel LLP (fictional)", updated: "11/02/2026" }
+];
+function heroStatus(step) {
+  if (step <= 1) return "PROCESSING";
+  if (step <= 5) return "IN_REVIEW";
+  return "APPROVED";
+}
+function matterStatus(m, step) {
+  if (m.id === HERO_ID) return heroStatus(step);
+  if (m.id === "cmw2demo004approved") return "APPROVED";
+  return "IN_REVIEW";
+}
+function badgeClass(s) {
+  if (s === "APPROVED") return "badge badge-approved";
+  if (s === "PROCESSING") return "badge badge-processing";
+  return "badge badge-draft";
+}
+var FINDINGS = [
+  { section: "Clinical History", text: "Patient injured at work on 10/12/2026 while lifting a heavy box; immediate onset of low back pain radiating to the left leg.", citationLabel: "synthetic-record.pdf, p. 1", citationVerified: true, status: "EXTRACTED" },
+  { section: "Diagnoses", text: "Lumbar radiculopathy, left L5 distribution, secondary to L4–L5 disc protrusion.", citationLabel: "synthetic-record.pdf, p. 1", citationVerified: true, status: "EXTRACTED" },
+  { section: "Objective Findings", text: "MRI lumbar spine (10/15/2026): L4–L5 disc protrusion contacting the left L5 nerve root.", citationLabel: "synthetic-record.pdf, p. 1", citationVerified: true, status: "EXTRACTED" },
+  { section: "Response to Treatment", text: "Physical therapy 10/19/2026–11/02/2026: pain improved from 8/10 to 5/10; straight leg raise improved.", citationLabel: "synthetic-record.pdf, p. 1", citationVerified: true, status: "EXTRACTED" },
+  { section: "Work Status & Restrictions", text: "Modified duty, lifting limit 15 lb, through the treatment period.", citationLabel: "synthetic-record.pdf, p. 1", citationVerified: true, status: "EXTRACTED" },
+  { section: "Data Completeness", text: "Date of birth appears twice in the record with different years — surfaced as a conflict for reviewer disposition, never silently resolved.", citationLabel: "synthetic-record.pdf, pp. 1, 63", citationVerified: true, status: "CONFLICT" }
+];
+var CONFLICTS = [
+  { title: "Date of birth — two values in record", statementA: "DOB 03/14/1978 (intake face sheet)", statementB: "DOB 03/14/1987 (p. 63, therapy note header)", isOpen: true, disposition: "Flagged DOB_CONFLICT — reviewer to confirm against source ID before approval.", conflictType: "DOB_CONFLICT" }
+];
+var MISSING = [
+  { label: "Operative report", note: "No surgery in record — item searched across all 445 pages; MISSING only because completely absent." },
+  { label: "Prior lumbar imaging before 10/12/2026", note: "Searched narrative, headers and fax covers in EN/ES; completely absent." }
+];
+var REPORT_SECTIONS = [
+  ["A. Report Identification", "Matter SYNTH-WC-001 · Claim WC-TEST-2026-001 · SYNTHETIC TEST PATIENT · Workers' Compensation · Massachusetts. Synthetic demo data — no real patient information."],
+  ["B. Records Reviewed and Scope", "One scanned record set, 445 pages, read page by page through the platform OCR path. Scope: clinical history, diagnoses, chronology, objective findings, treatment response, work status, conflicts, and completeness."],
+  ["I. Clinical History", "Work lifting injury on 10/12/2026 with immediate low back pain radiating to the left leg. [CIT-001 · p. 1]"],
+  ["II. Diagnoses", "Lumbar radiculopathy, left L5 distribution, secondary to L4–L5 disc protrusion. [CIT-002 · p. 1]"],
+  ["III. Chronological Treatment", "10/12/2026 injury and initial evaluation → 10/15/2026 lumbar MRI → 10/19/2026–11/02/2026 physical therapy course. [CIT-003 · p. 1]"],
+  ["IV. Objective Findings", "MRI: L4–L5 disc protrusion contacting the left L5 nerve root. Examination: positive straight leg raise on the left. [CIT-004 · p. 1]"],
+  ["V. Response to Treatment", "Pain improved from 8/10 to 5/10 over the therapy course; function improving. [CIT-005 · p. 1]"],
+  ["VI. Work Status and Restrictions", "Modified duty with a 15 lb lifting limit through the treatment period. [CIT-006 · p. 1]"],
+  ["VII. Conflicting or Inconsistent Evidence", "DOB_CONFLICT: date of birth recorded as 03/14/1978 on the intake face sheet and 03/14/1987 on p. 63. Surfaced for reviewer disposition; not silently resolved. Age-dependent statements are flagged AGE_UNVERIFIABLE until the conflict is dispositioned."],
+  ["VIII. Data Completeness Notes", "Operative report and prior lumbar imaging are completely absent after full-record search and are reported MISSING on that basis only."],
+  ["IX. Reviewer Certification and Approval", "Reviewer certification and approval are recorded in the platform before any export is released. (Demo: approval state shown in the walkthrough.)"],
+  ["X. Expert Opinion", "The Expert Opinion is drafted by the Expert Opinion Agent from this Pertinent Report plus the treating physician's visit note, and takes effect only on named expert attestation — see the Expert Opinion workspace."],
+  ["XI. Summary of Records", "445 pages: emergency and clinic notes, imaging report, therapy notes. Every extracted field carries a page citation; unverifiable citations are flagged, never hidden."],
+  ["XII. Reading and Verification", "Read quality: OCR with per-page routing and confidence scoring; low-confidence pages flagged for human review. Battery verification: precision 98.98%, recall 98.47%, citation coverage 100%."]
+];
+var OPINION_SECTIONS = [
+  ["Opener", "Within a reasonable degree of medical certainty, and based on the Pertinent Report of record and my evaluation of the patient, I offer the following opinion."],
+  ["DIAGNOSIS", "Lumbar radiculopathy, left L5 distribution, secondary to L4–L5 disc protrusion, confirmed on MRI dated 10/15/2026."],
+  ["CAUSAL RELATIONSHIP", "The diagnosed condition is causally related to the work injury of 10/12/2026 (lifting mechanism, immediate symptom onset, no prior lumbar history in the record)."],
+  ["DISABILITY", "The patient was on modified duty (15 lb lifting limit) through the treatment period; temporary partial disability during active treatment."],
+  ["AMA CALCULATIONS", "[EXPERT RATING REQUIRED — the agent does not rate. The expert enters the impairment rating under the AMA Guides before approval can proceed.]"],
+  ["WORK CAPACITY", "Modified duty at a 15 lb lifting limit remains appropriate pending re-evaluation; sedentary-to-light capacity otherwise."],
+  ["PROGNOSIS", "Improving with conservative care (pain 8/10 → 5/10). Continued therapy expected to yield further improvement."],
+  ["REASONABLE THERAPEUTIC OPTIONS FOR THIS PATIENT", "Continued physical therapy; epidural steroid injection if progress plateaus; surgical consultation only if conservative care fails."],
+  ["Closing", "This opinion is based on the records cited and the evaluation noted. I reserve the right to supplement it if additional records are provided."],
+  ["Signature", "Approved and attested by the named expert in the platform; the attestation is recorded before export is enabled."]
+];
+var ACTIVITY = [
+  ["11/04/2026 09:12", "Matter created", "Intake started from the scanned record upload (445 pages)."],
+  ["11/04/2026 09:13", "Intake items missing at creation (Extraction Module)", "Operative report; prior lumbar imaging — recorded as missing at creation."],
+  ["11/04/2026 09:21", "Clinical extraction completed", "All sections extracted with page citations; DOB conflict surfaced."],
+  ["11/04/2026 09:40", "Intake Extraction Module data confirmed", "Reviewer confirmed the extraction and opened clinical review."],
+  ["11/04/2026 10:05", "Expert Opinion draft generated", "Drafted from the Pertinent Report + physician visit note; AMA rating flag raised."],
+  ["11/04/2026 10:22", "Expert review completed — opinion approved and attested", "AMA rating entered by the expert; attestation recorded before export."],
+  ["11/04/2026 10:31", "Expert Report Agent run completed", "Complete draft produced with self-audit attached; reviewer gate unchanged."],
+  ["11/04/2026 10:35", "Report approved", "Final report approved; PDF and DOCX export released."]
+];
+/* ============ STATE ============ */
+var S = { view: "guide", step: 0, free: null, auto: false,
+  op: { draft: false, inReview: false, rating: "", approved: false },
+  agent: { running: false, ran: false, log: [] } };
+var DEMO_RATING = "7% whole person impairment — AMA Guides, 6th edition, lumbar disc herniation with radiculopathy";
+var STEPS = [
+  { view: "dashboard", cap: "Step 1 of 8 — Dashboard. The Clinical Operations Dashboard: live counts, the pilot safety banner, and the matter queue. The synthetic case WC-TEST-2026-001 is processing." },
+  { view: "matter", cap: "Step 2 of 8 — Intake. On the matter page, the scanned record (445 pages) is uploaded under Source Records. Every page is read through the OCR path with per-page routing; low-confidence pages are flagged for human review — never silently accepted." },
+  { view: "matter", cap: "Step 3 of 8 — Extraction. The strict rule: extract everything that exists anywhere in the record, always with a page citation. Disagreements surface as CONFLICTS; an item is MISSING only when completely absent. Note the DOB conflict and the accuracy scorecard." },
+  { view: "report", cap: "Step 4 of 8 — Pertinent Report. The 12-section Pertinent Medical Record Summary built from the extraction — citations throughout, the conflicts section populated, de-identified rendering available." },
+  { view: "opinion", cap: "Step 5 of 8 — Expert Opinion Agent. Two inputs side by side: the Pertinent Report (Input A) and the physician's visit note (Input B). The agent drafts in the standard scaffold — and stops at the AMA rating: [EXPERT RATING REQUIRED]. Export is locked; try the Export PDF button." },
+  { view: "opinion", cap: "Step 6 of 8 — Expert review & attestation. The expert enters the AMA rating, reviews the draft, and approves with a named attestation. Only then does export unlock." },
+  { view: "matter", cap: "Step 7 of 8 — Expert Report Agent. One Run produces a complete report draft with a self-audit attached — citation sample, age/DOB scan, coverage statement. The human reviewer gate does not change." },
+  { view: "final", cap: "Step 8 of 8 — Final report & export. The approved report, the full activity audit trail in order, and PDF/DOCX export released. End of the workflow — jump to any step from the dots, or browse the matters freely from the sidebar." }
+];
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function hero(){ return MATTERS[0]; }
+function byId(id){ for (var i=0;i<MATTERS.length;i++) if (MATTERS[i].id===id) return MATTERS[i]; return MATTERS[0]; }
+function navHTML(active){
+  var items = [["guide","▶ Walkthrough"],["dashboard","Dashboard"],["matters","Matters"],["newmatter","New Matter"],["reports","Reports"],["audits","Expert Audit"],["charges","Charges"]];
+  var out = "";
+  items.forEach(function(it){
+    out += '<button type="button" class="nav-link'+(active===it[0]?' active':'')+'" data-nav="'+it[0]+'">'+it[1]+'</button>';
+  });
+  return out;
+}
+function queueRows(step){
+  return MATTERS.map(function(m){
+    var st = matterStatus(m, step);
+    return '<tr><td><strong>'+esc(m.subjectLabel)+'</strong><div class="sub-line">'+esc(m.id)+' · '+esc(m.clientReference)+'</div></td><td>'+esc(m.clientName)+'</td><td><span class="'+badgeClass(st)+'">'+st+'</span></td></tr>';
+  }).join("");
+}
+function dashboardHTML(step){
+  var counts = step<=1 ? [4,1,3,1] : (step<=5 ? [4,0,4,1] : [4,0,3,2]);
+  return '<div class="eyebrow">MEDEXEC CONCIERGE</div><h1 class="page">Clinical Operations Dashboard</h1>'
+  + '<span class="demo-tag">SYNTHETIC DEMO DATA</span>'
+  + '<div class="banner-amber"><strong>Pilot safety control:</strong> Synthetic or properly de-identified records only. Do not submit PHI.</div>'
+  + '<div class="stat-grid">'
+  + '<div class="stat-card"><div class="stat-label">ACTIVE MATTERS</div><div class="stat-value">'+counts[0]+'</div><div class="stat-note">Total in this organization</div></div>'
+  + '<div class="stat-card"><div class="stat-label">PROCESSING</div><div class="stat-value">'+counts[1]+'</div><div class="stat-note">OCR / extraction in progress</div></div>'
+  + '<div class="stat-card"><div class="stat-label">IN CLINICAL REVIEW</div><div class="stat-value">'+counts[2]+'</div><div class="stat-note">Awaiting reviewer action</div></div>'
+  + '<div class="stat-card"><div class="stat-label">APPROVED</div><div class="stat-value">'+counts[3]+'</div><div class="stat-note">Ready to release</div></div>'
+  + '</div>'
+  + '<div class="card" style="border-top:3px solid #b8860b"><div class="eyebrow">QUALITY ASSURANCE</div><h3 class="card-title">Audit Reports</h3><p style="font-size:13.5px;margin:0 0 12px">Independent accuracy audits of system reports against source records.</p><button type="button" class="btn btn-teal" data-nav="audits">Open Audits</button></div>'
+  + '<div class="card"><div class="eyebrow">MATTER QUEUE</div><h3 class="card-title">Recent Matters</h3><table class="data-table"><thead><tr><th>Matter</th><th>Client</th><th>Status</th></tr></thead><tbody>'+queueRows(step)+'</tbody></table></div>';
+}
+function mattersHTML(step){
+  var rows = MATTERS.map(function(m){
+    var st = matterStatus(m, step);
+    return '<tr><td><strong>'+esc(m.subjectLabel)+'</strong><div class="sub-line">'+esc(m.id)+' · '+esc(m.clientReference)+'</div></td><td>'+esc(m.matterType)+'</td><td>'+m.pageCount+'</td><td><span class="'+badgeClass(st)+'">'+st+'</span></td><td><a href="#" data-open="'+m.id+'" style="font-weight:600">Open Case</a></td></tr>';
+  }).join("");
+  return '<div class="card"><div class="eyebrow">CASE DASHBOARD</div><h3 class="card-title">Your Review Queue</h3><span class="demo-tag">SYNTHETIC DEMO DATA</span><table class="data-table"><thead><tr><th>Subject / Matter</th><th>Type</th><th>Pages</th><th>Status</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function readQualityHTML(){
+  return '<div style="margin-top:14px"><div class="eyebrow">READ QUALITY</div>'
+  + '<div class="progress"><i style="width:100%"></i></div>'
+  + '<div style="font-size:12.5px;color:var(--ink-soft)">445 of 445 pages read · per-page routing: native text where present, OCR for scanned pages</div>'
+  + '<div style="margin-top:8px"><span class="flag-chip">12 pages low OCR confidence — flagged for human review</span><span class="flag-chip">3 fax-cover pages routed to header extraction</span><span class="flag-chip">2 Spanish-language pages routed EN/ES</span></div></div>';
+}
+function documentsHTML(m){
+  return '<div class="doc-row"><div><strong>synthetic-record.pdf</strong><div class="sub-line">OCR COMPLETE · '+m.pageCount+' pages · sha256 9f2c…a41b (synthetic fixture)</div></div><span class="badge badge-approved">READ</span></div>'
+  + '<div class="doc-row"><div><strong>synthetic-visit-note.pdf</strong><div class="sub-line">Physician visit note · OCR COMPLETE · 1 page</div></div><span class="badge badge-approved">READ</span></div>';
+}
+function matterDetailsCard(m, step){
+  var st = m.id===HERO_ID ? heroStatus(step) : matterStatus(m, step);
+  return '<div class="card"><div class="eyebrow">MATTER DETAILS</div><h3 class="card-title">Case Information</h3>'
+  + '<div class="kv"><span>Client:</span><b>'+esc(m.clientName)+'</b></div>'
+  + '<div class="kv"><span>Type:</span><b>'+esc(m.matterType)+'</b></div>'
+  + '<div class="kv"><span>Status:</span><b>'+st+'</b></div>'
+  + '<div class="kv"><span>Extraction mode:</span><b>STRICT — full-record, cited</b></div>'
+  + '<div class="kv"><span>Claim #:</span><b>'+esc(m.claimNumber)+'</b></div>'
+  + '<div class="kv"><span>Carrier:</span><b>'+esc(m.carrier)+'</b></div>'
+  + '<div class="kv"><span>Patient:</span><b>'+esc(m.claimantIdentifier)+' · DOB '+esc(m.dobA)+(m.dobB?' / '+esc(m.dobB)+' (conflict)':'')+' · DOI '+esc(m.doi)+'</b></div>'
+  + '<div class="kv"><span>Jurisdiction:</span><b>'+esc(m.jurisdiction)+'</b></div>'
+  + '<div class="kv"><span>Attorney:</span><b>'+esc(m.attorney)+'</b></div></div>'
+  + '<div class="card"><div class="eyebrow">PROPRIETARY ALGORITHMS</div><h3 class="card-title">Algorithm Screens</h3><p style="font-size:13px;color:var(--ink-soft);margin:0">The platform\'s proprietary screening algorithms run over the extracted record. Screens and results appear here on the live platform.</p></div>';
+}
+function findingsHTML(){
+  var f = FINDINGS.map(function(x){
+    return '<div class="finding"><strong>'+esc(x.section)+'</strong> — '+esc(x.text)+'<div class="cite">Citation: '+esc(x.citationLabel)+' · '+(x.citationVerified?'<span class="cite-ok">citation verified</span>':'citation unverified')+' · '+esc(x.status)+'</div></div>';
+  }).join("");
+  var c = CONFLICTS.map(function(x){
+    return '<div class="conflict-box"><strong>'+esc(x.title)+'</strong> <span class="badge badge-conflict">OPEN CONFLICT</span><div style="margin-top:6px">A: '+esc(x.statementA)+'<br>B: '+esc(x.statementB)+'</div><div style="margin-top:6px;color:var(--ink-soft)">'+esc(x.disposition)+'</div></div>';
+  }).join("");
+  var miss = MISSING.map(function(x){ return '<div class="finding"><strong>MISSING</strong> — '+esc(x.label)+'<div class="cite">'+esc(x.note)+'</div></div>'; }).join("");
+  return '<div class="card"><div class="eyebrow">CLINICAL INTELLIGENCE</div><h3 class="card-title">Pertinent Medical Record Summary</h3>'
+  + '<div class="scorecard"><span class="score-chip">Accuracy battery — Precision 98.98%</span><span class="score-chip">Recall 98.47%</span><span class="score-chip">Citations 100%</span></div>'
+  + f + c + miss
+  + '<p style="font-size:12.5px;color:var(--ink-soft);margin-top:10px">De-identified rendering is available for this summary; identifiers are redacted or the render is blocked when redaction cannot be enforced.</p></div>';
+}
+function agentPanelHTML(){
+  var inner;
+  if (S.agent.running) {
+    inner = '<div style="font-size:13px">'+S.agent.log.map(function(l){return '<div>▸ '+esc(l)+'</div>';}).join("")+'<div class="progress"><i style="width:70%"></i></div></div>';
+  } else if (S.agent.ran) {
+    inner = '<div style="font-size:13px">Last run: 11/04/2026 10:31 AM — <strong>COMPLETED</strong>. Complete draft produced (10 content sections).</div>'
+    + '<div class="conflict-box" style="background:#f2f8f6;border-color:#bfe6da"><strong>Self-audit attached</strong><div style="margin-top:6px">Citation sample: 11 citations checked against source pages — all verified; any miss would be itemized here, never hidden.<br>Age/DOB scan: 0 age mismatches · 1 DOB conflict disclosed (see Section VII) · age-dependent statements flagged until dispositioned.<br>Coverage: 445 of 445 pages read — scope complete for this record set.</div></div>'
+    + '<div style="font-size:12.5px;color:var(--ink-soft)">The reviewer gate is unchanged: the draft takes effect only through human review and approval.</div>';
+  } else {
+    inner = '<div style="font-size:13px;color:var(--ink-soft)">No agent run yet on this matter.</div>';
+  }
+  return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="eyebrow">EXPERT REPORT AGENT</div><h3 class="card-title" style="margin-bottom:4px">Expert Report Agent</h3></div>'
+  + (S.agent.ran||S.agent.running ? '' : '<button type="button" class="btn btn-primary" id="runAgentBtn">Run</button>') + '</div>' + inner + '</div>';
+}
+function matterHTML(m, step, mode){
+  var isHero = m.id===HERO_ID;
+  var st = isHero ? heroStatus(step) : matterStatus(m, step);
+  var head = '<a href="#" data-nav="matters" style="font-size:13px">← Back to Matters</a>'
+  + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-top:8px"><div><div class="eyebrow">'+esc(m.id)+' · '+esc(m.clientReference)+'</div><h1 class="page" style="margin-bottom:4px">'+esc(m.subjectLabel)+'</h1><span class="demo-tag">SYNTHETIC DEMO DATA</span></div>'
+  + '<div style="display:flex;gap:10px"><button type="button" class="btn btn-primary" data-opinion="'+m.id+'">Expert Opinion</button><button type="button" class="btn btn-ghost" data-activity="1">View Activity Log</button></div></div>';
+  var left = '<div class="card"><div class="eyebrow">SOURCE RECORDS</div><h3 class="card-title">Upload &amp; Process Records</h3>'+documentsHTML(m)+readQualityHTML()+'</div>';
+  if (isHero && mode==="extraction") left += findingsHTML();
+  if (isHero && mode==="agent") left += findingsHTML();
+  var panel = isHero ? agentPanelHTML() : '<div class="card"><div class="eyebrow">EXPERT REPORT AGENT</div><h3 class="card-title" style="margin-bottom:4px">Expert Report Agent</h3><div style="font-size:13px;color:var(--ink-soft)">Runs are shown live on the walkthrough case, SYNTH-WC-001.</div></div>';
+  return head + panel + '<div class="detail-grid"><div>'+left+'</div><div>'+matterDetailsCard(m, step)+'</div></div>'
+  + '<div style="font-size:12.5px;color:var(--ink-soft)">Status: <span class="'+badgeClass(st)+'">'+st+'</span></div>';
+}
+function reportHTML(m, step){
+  var st = m.id===HERO_ID ? heroStatus(step) : matterStatus(m, step);
+  var secs = REPORT_SECTIONS.map(function(s){
+    var body = s[1];
+    if (s[0].indexOf("A.")===0) body = "Matter "+m.clientReference+" · Claim "+m.claimNumber+" · "+m.claimantIdentifier+" · "+m.matterType+" · "+m.jurisdiction+". Synthetic demo data — no real patient information.";
+    return '<div class="report-sec"><h4>'+esc(s[0])+'</h4><p>'+esc(body)+'</p></div>';
+  }).join("");
+  return '<a href="#" data-open="'+m.id+'" style="font-size:13px">← Back to Matter</a>'
+  + '<div class="eyebrow" style="margin-top:8px">'+esc(m.id)+' · '+esc(m.clientReference)+'</div><h1 class="page">Pertinent Report — '+esc(m.subjectLabel)+'</h1>'
+  + '<span class="demo-tag">SYNTHETIC DEMO DATA</span>'
+  + (st==="APPROVED" ? '<div class="approved-banner">APPROVED — reviewer certification recorded. Export released.</div>' : '<div class="draft-banner">IN CLINICAL REVIEW — not yet approved</div>')
+  + '<div class="card">'+secs+'</div>';
+}
+function opinionHTML(m, op, interactive){
+  var head = '<a href="#" data-open="'+m.id+'" style="font-size:13px">← Back to Matter</a>'
+  + '<div class="eyebrow" style="margin-top:8px">'+esc(m.id)+' · '+esc(m.clientReference)+'</div><h1 class="page">Expert Opinion — '+esc(m.subjectLabel)+'</h1>'
+  + '<span class="demo-tag">SYNTHETIC DEMO DATA</span>'
+  + '<p style="font-size:13.5px;max-width:760px">The Expert Opinion Agent combines the matter\'s Pertinent Report with the physician\'s visit note and drafts the opinion in the standard scaffold. The draft is never final on its own: it takes effect only when the expert reviews, revises, and approves it with a named attestation. Export is blocked until approval.</p>';
+  var inputs = '<div class="card"><div class="eyebrow">PATIENT EVALUATION</div><h3 class="card-title">Patient Evaluation</h3><div class="two-input">'
+  + '<div class="input-card"><h5>Input A — the matter\'s Pertinent Report of record</h5><p>Pertinent Medical Record Summary · 12 sections · citations verified · version of record attached.</p></div>'
+  + '<div class="input-card"><h5>Input B — the treating physician\'s visit note, with his full assessment</h5><p><strong>synthetic-visit-note.pdf</strong> attached · PDF or image (PNG, JPEG, TIFF), max 10MB. Read through the platform OCR path. <a href="#" onclick="return false">Remove note</a></p></div>'
+  + '</div>'
+  + (interactive && !op.draft ? '<div style="margin-top:14px"><button type="button" class="btn btn-teal" id="genDraftBtn">Generate Draft</button></div>' : '')
+  + '</div>';
+  if (!op.draft) return head + inputs + '<div class="card"><div class="eyebrow">OPINION</div><p style="font-size:13.5px;color:var(--ink-soft);margin:0">No draft yet. Generate the draft from the two inputs to see the scaffold, the AMA flag, and the export gate.</p></div>';
+  var amaBlock = op.rating
+    ? '<div class="conflict-box" style="background:#f2f8f6;border-color:#bfe6da"><strong>AMA rating entered by the expert:</strong> '+esc(op.rating)+'<div style="color:var(--ink-soft);margin-top:4px">Flag dispositioned by the named expert — the agent never supplies the rating.</div></div>'
+    : '<div class="ama-flag"><strong>AMA rating flags (approval is blocked until dispositioned):</strong><br>AMA CALCULATIONS — [EXPERT RATING REQUIRED]. The agent does not rate impairment; the expert must enter the rating under the AMA Guides before approval can proceed.</div>';
+  var gaps = '<p style="font-size:13px;margin:8px 0"><strong>Gaps the record does not support:</strong> no prior lumbar imaging in the record; no operative report (no surgery recorded). The draft claims nothing beyond the cited record.</p>';
+  var secs = OPINION_SECTIONS.map(function(s){
+    var body = s[1];
+    if (s[0]==="AMA CALCULATIONS" && op.rating) body = op.rating + " — entered and attested by the expert.";
+    return '<div class="report-sec"><h4>'+esc(s[0])+'</h4><p>'+esc(body)+'</p></div>';
+  }).join("");
+  var review = "";
+  if (interactive) {
+    if (!op.inReview && !op.approved) review = '<button type="button" class="btn btn-primary" id="beginReviewBtn">Begin Expert Review</button>';
+    else if (op.inReview && !op.approved) review = '<div class="field"><label style="font-size:12.5px;font-weight:600;display:block;margin-bottom:6px">AMA impairment rating (expert entry)</label><textarea class="opinion-edit" id="ratingInput" placeholder="e.g. 7% whole person impairment — AMA Guides, 6th edition…">'+esc(op.rating)+'</textarea></div><button type="button" class="btn btn-teal" id="attestBtn">Approve &amp; Attest</button>';
+  }
+  var exports = '<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button type="button" class="btn btn-ghost" data-export="preview">Preview PDF (DRAFT-labeled)</button><button type="button" class="btn '+(op.approved?'btn-primary':'btn-ghost')+'" data-export="pdf">Export PDF</button><button type="button" class="btn '+(op.approved?'btn-primary':'btn-ghost')+'" data-export="docx">Export DOCX</button></div>';
+  var banner = op.approved
+    ? '<div class="approved-banner">APPROVED — attested by Mohammed M. Morgan, M.D. · attestation recorded before export</div>'
+    : '<div class="draft-banner">DRAFT — PENDING EXPERT REVIEW</div>';
+  return head + inputs
+  + '<div class="card"><div class="eyebrow">EXPERT OPINION AGENT</div>' + banner + amaBlock + gaps + '<div class="eyebrow" style="margin:12px 0 8px">OPINION SECTIONS</div>' + secs
+  + '<div style="font-size:12.5px;color:var(--ink-soft)">Insert macro… <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:12px" onclick="return false">Insert</button></div></div>'
+  + '<div class="card"><div class="eyebrow">REVIEW, APPROVAL &amp; EXPORT</div><h3 class="card-title">Review, Approval &amp; Export</h3>' + review + exports
+  + (op.approved ? '<p style="font-size:13px;margin-top:10px"><strong>Approved and attested by</strong> Mohammed M. Morgan, M.D. — recorded in the activity audit trail.</p>' : '')
+  + '</div>';
+}
+function auditsHTML(){
+  return '<div class="eyebrow">QUALITY ASSURANCE</div><h1 class="page">Audit Reports</h1><span class="demo-tag">SYNTHETIC DEMO DATA</span>'
+  + '<div class="card"><div class="eyebrow">ACCURACY AUDIT AGENT</div><h3 class="card-title">Frozen Accuracy Battery</h3>'
+  + '<div class="scorecard"><span class="score-chip">Precision 98.98%</span><span class="score-chip">Recall 98.47%</span><span class="score-chip">Citation coverage 100%</span></div>'
+  + '<p style="font-size:13.5px">Independent accuracy audits of system reports against source records. The Accuracy Audit Agent samples real report exports and scores them against the source record; failures are itemized, never averaged away. Weekly audit runs are scheduled on the live platform.</p>'
+  + '<table class="data-table"><thead><tr><th>Check</th><th>Result</th><th>Note</th></tr></thead><tbody>'
+  + '<tr><td>Citation verification</td><td><span class="badge badge-approved">PASS</span></td><td>Every citation resolves to its source page</td></tr>'
+  + '<tr><td>Age / DOB consistency scan</td><td><span class="badge badge-approved">PASS</span></td><td>DOB conflicts flag-and-continue as cited DOB_CONFLICT</td></tr>'
+  + '<tr><td>Coverage statement (§XII)</td><td><span class="badge badge-approved">PASS</span></td><td>Approval gated on actual recorded coverage</td></tr>'
+  + '</tbody></table></div>';
+}
+function activityHTML(){
+  var rows = ACTIVITY.map(function(a){
+    return '<div class="activity-row"><div class="when">'+esc(a[0])+'</div><div><div style="font-weight:600;font-size:13.5px">'+esc(a[1])+'</div><div style="color:var(--ink-soft);font-size:12.5px">'+esc(a[2])+'</div></div></div>';
+  }).join("");
+  return '<a href="#" data-open="'+HERO_ID+'" style="font-size:13px">← Back to Matter</a>'
+  + '<div class="eyebrow" style="margin-top:8px">'+HERO_ID+' · SYNTH-WC-001</div><h1 class="page">Activity Log</h1><span class="demo-tag">SYNTHETIC DEMO DATA</span>'
+  + '<div class="card">'+rows+'</div>'
+  + '<div class="card"><div class="eyebrow">FINAL REPORT + EXPORT</div><h3 class="card-title">Export</h3><p style="font-size:13.5px">The approved Pertinent Report and Expert Opinion export from the Reports page. On the live platform these buttons generate the real files; in this demo they confirm the release state.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn btn-primary" data-export="pdf">Export PDF</button><button type="button" class="btn btn-primary" data-export="docx">Export DOCX</button></div></div>';
+}
+function reportsHTML(step){
+  var rows = MATTERS.map(function(m){
+    var st = matterStatus(m, step);
+    return '<tr><td><strong>'+esc(m.subjectLabel)+'</strong><div class="sub-line">'+esc(m.id)+' · '+esc(m.clientReference)+'</div></td><td><span class="'+badgeClass(st)+'">'+st+'</span></td><td>'+esc(m.updated)+'</td><td><div style="display:flex;gap:12px"><a href="#" data-report="'+m.id+'">View</a><a href="#" data-export="pdf">Download PDF</a></div></td></tr>';
+  }).join("");
+  return '<h1 class="page">Reports</h1><span class="demo-tag">SYNTHETIC DEMO DATA</span><div class="card"><table class="data-table"><thead><tr><th>Subject / Matter</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function guidebarHTML(){
+  var dots = STEPS.map(function(s,i){
+    return '<button type="button" class="g-dot'+(i===S.step?' on':(i<S.step?' done':''))+'" data-step="'+i+'" aria-label="Step '+(i+1)+'"></button>';
+  }).join("");
+  return '<div><div class="g-title">GUIDED WALKTHROUGH</div><div style="font-size:11px;color:#9db0d6">Exact workflow · synthetic case</div></div>'
+  + '<div class="g-dots">'+dots+'</div>'
+  + '<div class="g-cap">'+esc(STEPS[S.step].cap)+'</div>'
+  + '<button type="button" class="btn btn-ghost" id="gBack" '+(S.step===0?'disabled':'')+'>← Back</button>'
+  + '<button type="button" class="btn btn-teal" id="gAuto">'+(S.auto?'❚❚ Pause':'▶ Auto-play')+'</button>'
+  + '<button type="button" class="btn btn-teal" id="gNext">'+(S.step===STEPS.length-1?'Restart ↺':'Next →')+'</button>';
+}
+function currentViewHTML(){
+  if (S.view==="guide") {
+    var v = STEPS[S.step].view;
+    if (v==="dashboard") return dashboardHTML(S.step);
+    if (v==="matter") return matterHTML(hero(), S.step, S.step===2?"extraction":(S.step===6?"agent":"intake"));
+    if (v==="report") return reportHTML(hero(), S.step);
+    if (v==="opinion") return opinionHTML(hero(), S.op, true);
+    if (v==="final") return activityHTML();
+  }
+  if (S.view==="dashboard") return dashboardHTML(S.step);
+  if (S.view==="matters") return mattersHTML(S.step);
+  if (S.view==="reports") return reportsHTML(S.step);
+  if (S.view==="audits") return auditsHTML();
+  if (S.view && S.view.indexOf("matter:")===0) { var m=byId(S.view.slice(7)); return matterHTML(m, S.step, m.id===HERO_ID ? (S.step>=6?"agent":(S.step>=2?"extraction":"intake")) : "static"); }
+  if (S.view && S.view.indexOf("report:")===0) return reportHTML(byId(S.view.slice(7)), S.step);
+  if (S.view && S.view.indexOf("opinion:")===0) { var om=byId(S.view.slice(8)); var op = om.id===HERO_ID ? S.op : (om.id==="cmw2demo003opinion" ? {draft:true,inReview:false,rating:"",approved:false} : {draft:true,inReview:true,rating:DEMO_RATING,approved:true}); return opinionHTML(om, op, om.id===HERO_ID); }
+  if (S.view==="activity") return activityHTML();
+  return dashboardHTML(S.step);
+}
+function activeNav(){
+  if (S.view==="guide") return "guide";
+  if (S.view.indexOf("matter:")===0 || S.view.indexOf("report:")===0 || S.view.indexOf("opinion:")===0 || S.view==="activity") return "matters";
+  return S.view;
+}
+/* Step transitions: entering a step guarantees its end-state (a showing, not a sandbox). */
+function applyStepSideEffects(){
+  if (S.step>=4) { /* opinion draft exists from step 5 display onward only when generated; keep manual */ }
+  if (S.step>=5 && !S.op.draft) S.op.draft = true;
+  if (S.step>=5) S.op.inReview = true;
+  if (S.step>=6 && !S.op.approved) { if(!S.op.rating) S.op.rating = DEMO_RATING; S.op.approved = true; }
+  if (S.step>=7 && !S.agent.ran && !S.agent.running) { S.agent.ran = true; }
+  if (S.step<4) { /* earlier steps keep prior progress; do not roll back a completed showing */ }
+}
+function exportGate(){
+  return S.op.approved || S.step>=7;
+}
+/* ============ DOM WIRING (browser only) ============ */
+if (typeof document !== "undefined") {
+  var toastTimer = null, autoTimer = null;
+  function toast(msg, isErr){
+    var t = document.getElementById("toast");
+    t.textContent = msg; t.className = "toast" + (isErr ? " err" : ""); t.style.display = "block";
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.style.display = "none"; }, 4200);
+  }
+  function render(){
+    applyStepSideEffects();
+    document.getElementById("sideNav").innerHTML = navHTML(activeNav());
+    document.getElementById("mainView").innerHTML = currentViewHTML();
+    document.getElementById("guidebar").innerHTML = guidebarHTML();
+    window.scrollTo(0,0);
+  }
+  function goStep(n){
+    S.view = "guide";
+    S.step = n < 0 ? 0 : (n >= STEPS.length ? 0 : n);
+    if (S.step === 0 && n >= STEPS.length) { S.op = { draft:false, inReview:false, rating:"", approved:false }; S.agent = { running:false, ran:false, log:[] }; }
+    render();
+  }
+  function runAgent(){
+    if (S.agent.running || S.agent.ran) return;
+    S.agent.running = true; S.agent.log = [];
+    render();
+    var lines = ["Run started — inputs: Pertinent Report of record + record set (445 pages)",
+      "Drafting 10 content sections from the cited extraction…",
+      "Self-audit: sampling citations against source pages…",
+      "Self-audit: age/DOB consistency scan…",
+      "Self-audit: coverage statement (§XII)…",
+      "Run completed — draft + self-audit attached. Reviewer gate unchanged."];
+    var i = 0;
+    (function next(){
+      if (i < lines.length) { S.agent.log.push(lines[i]); i++; render(); setTimeout(next, 700); }
+      else { S.agent.running = false; S.agent.ran = true; render(); }
+    })();
+  }
+  function startAuto(){
+    stopAuto(); S.auto = true;
+    autoTimer = setInterval(function(){ if (!S.agent.running) goStep(S.step + 1); }, 11000);
+    render();
+  }
+  function stopAuto(){ S.auto = false; if (autoTimer) clearInterval(autoTimer); autoTimer = null; }
+  document.addEventListener("click", function(ev){
+    var nav = ev.target.closest("[data-nav]");
+    if (nav) { ev.preventDefault(); stopAuto(); var v = nav.getAttribute("data-nav");
+      if (v==="guide") { S.view="guide"; } else if (v==="newmatter") { toast("New Matter is disabled in the demo — the walkthrough runs on bundled synthetic data only."); return; }
+      else if (v==="charges") { toast("Charges is outside the demo walkthrough."); return; }
+      else S.view = v;
+      render(); return; }
+    var open = ev.target.closest("[data-open]");
+    if (open) { ev.preventDefault(); stopAuto(); S.view = "matter:" + open.getAttribute("data-open"); render(); return; }
+    var rep = ev.target.closest("[data-report]");
+    if (rep) { ev.preventDefault(); stopAuto(); S.view = "report:" + rep.getAttribute("data-report"); render(); return; }
+    var opn = ev.target.closest("[data-opinion]");
+    if (opn) { ev.preventDefault(); stopAuto(); S.view = "opinion:" + opn.getAttribute("data-opinion"); render(); return; }
+    var act = ev.target.closest("[data-activity]");
+    if (act) { ev.preventDefault(); stopAuto(); S.view = "activity"; render(); return; }
+    var exp = ev.target.closest("[data-export]");
+    if (exp) { ev.preventDefault();
+      if (!exportGate() && exp.getAttribute("data-export") !== "preview") { toast("Export refused — the opinion is not approved. Approval requires every AMA rating flag dispositioned and a named expert attestation recorded.", true); return; }
+      if (exp.getAttribute("data-export") === "preview" && !exportGate()) { toast("Preview generated — watermarked DRAFT — PENDING EXPERT REVIEW, as on the live platform."); return; }
+      toast("Demo export — on the live platform this generates the real " + (exp.getAttribute("data-export")==="docx" ? "DOCX" : "PDF") + " file. Synthetic data only."); return; }
+    if (ev.target.id === "gNext") { goStep(S.step + 1); return; }
+    if (ev.target.id === "gBack") { stopAuto(); goStep(S.step - 1); return; }
+    if (ev.target.id === "gAuto") { if (S.auto) { stopAuto(); render(); } else startAuto(); return; }
+    var dot = ev.target.closest("[data-step]");
+    if (dot) { stopAuto(); goStep(parseInt(dot.getAttribute("data-step"), 10)); return; }
+    if (ev.target.id === "genDraftBtn") { S.op.draft = true; render(); toast("Draft generated from Input A + Input B. AMA rating flag raised — approval blocked until the expert rates."); return; }
+    if (ev.target.id === "beginReviewBtn") { S.op.inReview = true; render(); return; }
+    if (ev.target.id === "attestBtn") {
+      var inp = document.getElementById("ratingInput");
+      var val = inp ? inp.value.trim() : "";
+      if (!val) { toast("Approval refused — the AMA rating flag is still open. The expert must enter the impairment rating before attesting.", true); return; }
+      S.op.rating = val; S.op.approved = true; render();
+      toast("Approved and attested by Mohammed M. Morgan, M.D. — attestation recorded. Export unlocked."); return; }
+    if (ev.target.id === "runAgentBtn") { runAgent(); return; }
+    if (ev.target.id === "signOutBtn") { try { localStorage.removeItem("medexec_demo_session"); } catch(e){} window.location.href = "../"; return; }
+  });
+  /* Session gate — the hidden portal (../) is the only door. */
+  var hasSession = false;
+  try { hasSession = !!localStorage.getItem("medexec_demo_session"); } catch(e) {}
+  if (!hasSession) {
+    document.getElementById("lockRoot").style.display = "block";
+    document.getElementById("lockRoot").innerHTML = '<div class="lock-wrap"><div class="lock-card"><div class="brand" style="justify-content:center"><div class="brand-mark">M</div><div style="text-align:left"><div class="brand-name" style="color:var(--ink)">MedExec</div><div class="brand-tag" style="color:var(--teal-dark)">EVIDENCE. VERIFIED.</div></div></div><h2 style="font-family:var(--serif);margin:6px 0">Demo access required</h2><p style="font-size:13.5px;color:var(--ink-soft)">This demo is available only to NDA signers through the invitation link. Sign in through the demo portal to continue.</p><a class="btn btn-primary" style="display:inline-block;text-decoration:none" href="../">Go to the Demo Portal</a></div></div>';
+  } else {
+    document.getElementById("appRoot").style.display = "block";
+    render();
+  }
+}
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { MATTERS: MATTERS, STEPS: STEPS, S: S, dashboardHTML: dashboardHTML, mattersHTML: mattersHTML, matterHTML: matterHTML, reportHTML: reportHTML, opinionHTML: opinionHTML, auditsHTML: auditsHTML, activityHTML: activityHTML, reportsHTML: reportsHTML, guidebarHTML: guidebarHTML, currentViewHTML: currentViewHTML, applyStepSideEffects: applyStepSideEffects, exportGate: exportGate, heroStatus: heroStatus, DEMO_RATING: DEMO_RATING };
+}
+
+</script>
+</body>
+</html>
