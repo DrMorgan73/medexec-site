@@ -33,6 +33,13 @@ const DEMO_PROVISIONED_ACCOUNTS = [
     issuedAt: "2026-11-04T18:02:38-05:00"
   },
   {
+    email: "colby@impactinsuranceut.com",
+    name: "Colby Hepler",
+    token: "41812c008d6a4c5528b9f1be5b6c21d9d65971eeddbb9112",
+    status: "invited",
+    issuedAt: "2026-11-04T18:14:05-05:00"
+  },
+  {
     /* Internal seed for end-to-end review; password lives in the
        DEMO_SEED_ACCOUNTS list on the portal page. No token: it is
        already active and cannot be (re)activated. */
