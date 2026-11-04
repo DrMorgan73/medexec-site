@@ -20,6 +20,13 @@
    status "invited", redeploy, and email them the link
    https://getmedexec.com/demo/activate/?token=<their token>.
 
+   AUTOMATIC (2026-11-04): the DEFAULT trigger is now a MEDEXEC NDA
+   signed through the public website — the app records the signing,
+   then calls /api/demo-provision (api/demo-provision.js), which adds
+   the entry here by committing this file (entries preserved
+   byte-for-byte), waits for it to deploy, and sends the activation
+   email. The manual path above remains for email-return NDAs.
+
    Static-stack note: this is the client-side simulation's data layer.
    Statuses are enforced by the portal/activation logic in the browser;
    real per-user auth remains the named next step before scale-out.

@@ -37,6 +37,11 @@ try {
   PROVISIONED = [];
 }
 
+/* ORG email signature incl. the MEDEXEC logo (DrMorgan's rules,
+   2026-11-04 18:53 + the 18:55 correction: system mail carries the
+   org variant — no personal name) — shared with /api/demo-provision. */
+const { SIGNATURE_TEXT, SIGNATURE_HTML } = require("./_signature");
+
 const NOTIFY_TO = process.env.DEMO_NOTIFY_TO || "drmohdmorgan@getmedexec.com";
 const NOTIFY_FROM =
   process.env.DEMO_NOTIFY_FROM || "MEDEXEC Demo Portal <onboarding@resend.dev>";
@@ -138,7 +143,19 @@ module.exports = async function handler(req, res) {
     `Account status (provisioning): ${status}`,
     "",
     "Access is controlled in demo/provisioning.js (invited / active / paused / revoked).",
-    "MEDEXEC · IEC, Inc."
+    "",
+    SIGNATURE_TEXT
+  ].join("\n");
+  const esc = s =>
+    String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const html = [
+    "<p><strong>MEDEXEC Demo Portal — access notification</strong></p>",
+    `<p>Who: ${esc(name)} (${esc(email)})<br>`,
+    `What: ${esc(what)}<br>`,
+    `When: ${esc(when)} (America/New_York)<br>`,
+    `Account status (provisioning): ${esc(status)}</p>`,
+    "<p>Access is controlled in demo/provisioning.js (invited / active / paused / revoked).</p>",
+    SIGNATURE_HTML
   ].join("\n");
 
   try {
@@ -148,7 +165,7 @@ module.exports = async function handler(req, res) {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ from: NOTIFY_FROM, to: [NOTIFY_TO], subject, text })
+      body: JSON.stringify({ from: NOTIFY_FROM, to: [NOTIFY_TO], subject, text, html })
     });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) {
