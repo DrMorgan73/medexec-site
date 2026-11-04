@@ -87,6 +87,33 @@ h3.card-title{font-family:var(--serif);font-size:17px;margin:2px 0 10px}
 .report-sec p{font-size:13.5px;margin:0 0 6px;color:#22304d}
 .draft-banner{background:var(--amber-bg);border:1px solid var(--amber-line);color:#8a6412;border-radius:var(--radius-sm);padding:10px 14px;font-weight:600;font-size:13px;margin-bottom:14px;text-align:center;letter-spacing:.03em}
 .approved-banner{background:#dff3ee;border:1px solid #bfe6da;color:var(--teal-dark);border-radius:var(--radius-sm);padding:10px 14px;font-weight:600;font-size:13px;margin-bottom:14px;text-align:center}
+/* ===== Exact report format (mirrors medexec-app report page + PDF) ===== */
+.report-sheet{background:#fff;max-width:760px;margin:0 auto;padding:48px;border-radius:8px;border:1px solid var(--line);color:#1a1a1a;box-shadow:var(--shadow-md)}
+.rs-head{text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--navy)}
+.rs-brand{font-family:var(--serif);font-weight:700;font-size:20px}
+.rs-tagline{font-size:10px;letter-spacing:.06em;color:var(--teal-dark)}
+.rs-doctitle{font-family:var(--serif);font-size:15px;margin-top:8px}
+.rs-title{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--navy);margin-top:6px}
+.rs-conf{font-size:9.5px;color:var(--ink-soft);margin-top:4px}
+.rs-h{font-family:var(--serif);font-size:14.5px;font-weight:600;border-bottom:1px solid var(--line);padding-bottom:5px;margin:22px 0 10px;color:var(--navy)}
+.rs-fields{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.rs-field{font-size:12.5px;margin-bottom:10px}
+.rs-label{color:var(--ink-soft);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:2px}
+.rs-p{font-size:13px;line-height:1.6;margin:0 0 6px}
+.rs-cite{color:#3457D5;font-weight:600;font-size:11.5px}
+.rs-note{font-size:11px;color:var(--ink-soft);font-style:italic;line-height:1.5}
+.rs-table{width:100%;border-collapse:collapse;font-size:12px}
+.rs-table th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;color:var(--ink-soft);font-size:10.5px}
+.rs-table td{padding:8px;border-bottom:1px solid #EEF1F6;vertical-align:top}
+.rs-card{border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px;font-size:12.5px}
+.rs-foot{border-top:1px solid var(--line);margin-top:30px;padding-top:12px;font-size:10.5px;color:var(--ink-soft);display:flex;justify-content:space-between}
+/* ===== Expert Opinion document (mirrors renderOpinionPdf) ===== */
+.opinion-doc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:28px 32px;color:#000;text-align:left}
+.od-draft{color:#B00020;font-size:10px;text-align:center;font-weight:700;letter-spacing:.03em;margin-bottom:12px}
+.od-title{font-size:15px;font-weight:700}
+.od-subject{font-size:10.5px;color:#444;margin-bottom:6px}
+.od-h{font-size:12px;font-weight:700;margin:16px 0 4px}
+.od-p{font-size:12px;line-height:1.6;text-align:justify;margin:0 0 8px;white-space:pre-line}
 .two-input{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .input-card{border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px;background:#fbfcfe}
 .input-card h5{margin:0 0 4px;font-size:13.5px}
@@ -182,34 +209,84 @@ var MISSING = [
   { label: "Operative report", note: "No surgery in record — item searched across all 445 pages; MISSING only because completely absent." },
   { label: "Prior lumbar imaging before 10/12/2026", note: "Searched narrative, headers and fax covers in EN/ES; completely absent." }
 ];
-var REPORT_SECTIONS = [
-  ["A. Report Identification", "Matter SYNTH-WC-001 · Claim WC-TEST-2026-001 · SYNTHETIC TEST PATIENT · Workers' Compensation · Massachusetts. Synthetic demo data — no real patient information."],
-  ["B. Records Reviewed and Scope", "One scanned record set, 445 pages, read page by page through the platform OCR path. Scope: clinical history, diagnoses, chronology, objective findings, treatment response, work status, conflicts, and completeness."],
-  ["I. Clinical History", "Work lifting injury on 10/12/2026 with immediate low back pain radiating to the left leg. [CIT-001 · p. 1]"],
-  ["II. Diagnoses", "Lumbar radiculopathy, left L5 distribution, secondary to L4–L5 disc protrusion. [CIT-002 · p. 1]"],
-  ["III. Chronological Treatment", "10/12/2026 injury and initial evaluation → 10/15/2026 lumbar MRI → 10/19/2026–11/02/2026 physical therapy course. [CIT-003 · p. 1]"],
-  ["IV. Objective Findings", "MRI: L4–L5 disc protrusion contacting the left L5 nerve root. Examination: positive straight leg raise on the left. [CIT-004 · p. 1]"],
-  ["V. Response to Treatment", "Pain improved from 8/10 to 5/10 over the therapy course; function improving. [CIT-005 · p. 1]"],
-  ["VI. Work Status and Restrictions", "Modified duty with a 15 lb lifting limit through the treatment period. [CIT-006 · p. 1]"],
-  ["VII. Conflicting or Inconsistent Evidence", "DOB_CONFLICT: date of birth recorded as 03/14/1978 on the intake face sheet and 03/14/1987 on p. 63. Surfaced for reviewer disposition; not silently resolved. Age-dependent statements are flagged AGE_UNVERIFIABLE until the conflict is dispositioned."],
-  ["VIII. Data Completeness Notes", "Operative report and prior lumbar imaging are completely absent after full-record search and are reported MISSING on that basis only."],
-  ["IX. Reviewer Certification and Approval", "Reviewer certification and approval are recorded in the platform before any export is released. (Demo: approval state shown in the walkthrough.)"],
-  ["X. Expert Opinion", "The Expert Opinion is drafted by the Expert Opinion Agent from this Pertinent Report plus the treating physician's visit note, and takes effect only on named expert attestation — see the Expert Opinion workspace."],
-  ["XI. Summary of Records", "445 pages: emergency and clinic notes, imaging report, therapy notes. Every extracted field carries a page citation; unverifiable citations are flagged, never hidden."],
-  ["XII. Reading and Verification", "Read quality: OCR with per-page routing and confidence scoring; low-confidence pages flagged for human review. Battery verification: precision 98.98%, recall 98.47%, citation coverage 100%."]
+/* Report data in the real buildReportData shape (medexec-app src/lib/report.ts):
+   title "<Patient Name>, <Case Number>", identification block, narrative
+   sections with (citationLabel) citations, chronology table rows, conflict
+   cards, page-issue cards, certification, Section XI entries, Section XII
+   paragraphs. Rendered by reportSheetHTML in the exact report format. */
+var HERO_NARRATIVE = {
+  clinicalHistory: [ { text: "Patient injured at work on 10/12/2026 while lifting a heavy box; immediate onset of low back pain radiating to the left leg.", citation: "synthetic-record.pdf, p. 1", key: "CIT-001" } ],
+  diagnoses: [ { text: "Lumbar radiculopathy, left L5 distribution, secondary to L4–L5 disc protrusion.", citation: "synthetic-record.pdf, p. 1", key: "CIT-002" } ],
+  objectiveFindings: [ { text: "MRI lumbar spine (10/15/2026): L4–L5 disc protrusion contacting the left L5 nerve root.", citation: "synthetic-record.pdf, p. 1", key: "CIT-004" } ],
+  responseToTreatment: [ { text: "Physical therapy 10/19/2026–11/02/2026: pain improved from 8/10 to 5/10; straight leg raise improved.", citation: "synthetic-record.pdf, p. 1", key: "CIT-005" } ],
+  workStatus: [ { text: "Modified duty, lifting limit 15 lb, through the treatment period.", citation: "synthetic-record.pdf, p. 1", key: "CIT-006" } ]
+};
+var HERO_TREATMENT = [
+  ["10/12/2026", "Emergency Department", "Initial evaluation after the work lifting injury — acute low back pain radiating to the left leg; lumbar strain diagnosed; discharged with NSAIDs and 3 days of rest.", "p. 1"],
+  ["10/15/2026", "Radiology — MRI Lumbar Spine", "L4–L5 disc protrusion contacting the traversing left L5 nerve root, concordant with the radicular symptoms.", "p. 1"],
+  ["10/19/2026", "Physical Therapy", "Therapy course begins, twice weekly; pain rated 8/10; lumbar flexion limited; straight leg raise positive on the left.", "p. 1"],
+  ["11/02/2026", "Physical Therapy", "Progress note: pain improved from 8/10 to 5/10; flexion improving; continue twice-weekly sessions.", "p. 1"]
 ];
+var HERO_CONFLICTS = [
+  { title: "Date of birth — two values in record", sourceA: "p. 1", sourceB: "p. 63",
+    disposition: "DOB_CONFLICT — flagged and carried as a cited conflict; the intake face-sheet date (03/14/1978) is used in the identification block and the conflicting value is not silently resolved.",
+    rationale: "The intake face sheet records date of birth 03/14/1978 (p. 1); a therapy note header records 03/14/1987 (p. 63). Age-dependent statements in this report are flagged AGE_UNVERIFIABLE until the reviewer confirms the date against source identification." }
+];
+var HERO_PAGE_ISSUES = [
+  { page: 63, file: "synthetic-record.pdf", reason: "Low-confidence OCR text", detail: "Therapy note header read at low OCR confidence; the date of birth in that header is one of the two conflicting values carried in Section VII.", finding: "Page checked against the original document; the header was confirmed as read, and the date-of-birth value is carried as a conflict rather than corrected.", by: "Mohammed M. Morgan, M.D.", at: "11/04/2026" },
+  { page: 118, file: "synthetic-record.pdf", reason: "No readable text extracted (OCR)", detail: "Fax cover sheet with no extractable text layer.", finding: "Confirmed as a fax cover page carrying no clinical content; no finding in this report rests on this page.", by: "Mohammed M. Morgan, M.D.", at: "11/04/2026" }
+];
+var HERO_READING = ["This report is based on a medical record of 445 pages. Every page was read electronically. 12 pages were difficult to read. Each of those pages was checked against the original document by a reviewer before this report was prepared."];
+var DEFAULT_SCOPE = "General clinical review of the submitted record set for pertinent findings.";
+/* Expert Opinion scaffold — exact section keys/titles and verbatim texts
+   from medexec-app src/lib/expert-opinion-agent.ts (EXPERT_OPINION_SECTIONS,
+   OPINION_OPENER, EXPERT_RATING_MARKER fallback, signature fallback). */
+var AMA_MARKER = "[EXPERT RATING REQUIRED — missing: expert impairment rating inputs (AMA Guides edition, table, class, %WPI).]";
 var OPINION_SECTIONS = [
-  ["Opener", "Within a reasonable degree of medical certainty, and based on the Pertinent Report of record and my evaluation of the patient, I offer the following opinion."],
-  ["DIAGNOSIS", "Lumbar radiculopathy, left L5 distribution, secondary to L4–L5 disc protrusion, confirmed on MRI dated 10/15/2026."],
-  ["CAUSAL RELATIONSHIP", "The diagnosed condition is causally related to the work injury of 10/12/2026 (lifting mechanism, immediate symptom onset, no prior lumbar history in the record)."],
-  ["DISABILITY", "The patient was on modified duty (15 lb lifting limit) through the treatment period; temporary partial disability during active treatment."],
-  ["AMA CALCULATIONS", "[EXPERT RATING REQUIRED — the agent does not rate. The expert enters the impairment rating under the AMA Guides before approval can proceed.]"],
-  ["WORK CAPACITY", "Modified duty at a 15 lb lifting limit remains appropriate pending re-evaluation; sedentary-to-light capacity otherwise."],
-  ["PROGNOSIS", "Improving with conservative care (pain 8/10 → 5/10). Continued therapy expected to yield further improvement."],
-  ["REASONABLE THERAPEUTIC OPTIONS FOR THIS PATIENT", "Continued physical therapy; epidural steroid injection if progress plateaus; surgical consultation only if conservative care fails."],
-  ["Closing", "This opinion is based on the records cited and the evaluation noted. I reserve the right to supplement it if additional records are provided."],
-  ["Signature", "Approved and attested by the named expert in the platform; the attestation is recorded before export is enabled."]
+  { key: "opener", title: "Opening", body: "Within a reasonable degree of medical certainty, my clinical opinion is as follows:" },
+  { key: "diagnosis", title: "DIAGNOSIS", body: "Lumbar radiculopathy, left L5 distribution, secondary to L4–L5 disc protrusion, confirmed on MRI dated 10/15/2026." },
+  { key: "causalRelationship", title: "CAUSAL RELATIONSHIP", body: "The diagnosed condition is causally related to the work injury of 10/12/2026 (lifting mechanism, immediate symptom onset, no prior lumbar history in the record)." },
+  { key: "disability", title: "DISABILITY", body: "The patient is temporarily partially disabled and was on modified duty (15 lb lifting limit) through the treatment period. The patient is not yet at maximum medical improvement." },
+  { key: "amaCalculations", title: "AMA CALCULATIONS", body: AMA_MARKER },
+  { key: "workCapacity", title: "WORK CAPACITY", body: "Modified duty at a 15 lb lifting limit remains appropriate pending re-evaluation; sedentary-to-light capacity otherwise." },
+  { key: "prognosis", title: "PROGNOSIS", body: "Improving with conservative care (pain 8/10 → 5/10). Continued therapy expected to yield further improvement." },
+  { key: "therapeuticOptions", title: "REASONABLE THERAPEUTIC OPTIONS FOR THIS PATIENT", body: "Continued physical therapy; epidural steroid injection if progress plateaus; surgical consultation only if conservative care fails." },
+  { key: "closing", title: "Closing", body: "This opinion is based on the records cited and the evaluation noted. I reserve the right to supplement it if additional records are provided." },
+  { key: "signatureBlock", title: "Signature", body: "Mohammed M. Morgan, M.D.\nExpert signature on approval — the approved opinion is attested in MEDEXEC with the expert’s name and timestamp." }
 ];
+var OPINION_ATTEST_NAME = "Mohammed M. Morgan, M.D.";
+function opinionAttestIso(m){ return m.id === HERO_ID ? "2026-11-04T15:22:00.000Z" : "2026-11-02T15:05:00.000Z"; }
+/* The opinion as one document text — mirrors renderOpinionText: DRAFT label
+   first when unapproved, opener/signature without headings, attestation
+   line appended when APPROVED. */
+function opinionTextPlain(m, op){
+  var lines = [];
+  if (!op.approved) lines.push("DRAFT — PENDING EXPERT REVIEW", "");
+  OPINION_SECTIONS.forEach(function(s){
+    var body = s.body;
+    if (s.key === "amaCalculations") body = op.rating ? op.rating : AMA_MARKER;
+    if (s.key === "opener" || s.key === "signatureBlock") lines.push(body, "");
+    else lines.push(s.title, body, "");
+  });
+  if (op.approved) lines.push("Approved and attested by " + OPINION_ATTEST_NAME + " on " + opinionAttestIso(m) + " in MEDEXEC.");
+  return lines.join("\n").trim();
+}
+/* The opinion document view — mirrors renderOpinionPdf layout: red DRAFT
+   label on top when unapproved, "Expert Opinion" title, subject label in
+   gray, bold section headings, justified body, attestation line. */
+function opinionDocHTML(m, op){
+  var out = '<div class="opinion-doc">';
+  if (!op.approved) out += '<div class="od-draft">DRAFT — PENDING EXPERT REVIEW</div>';
+  out += '<div class="od-title">Expert Opinion</div><div class="od-subject">' + esc(m.subjectLabel) + '</div>';
+  OPINION_SECTIONS.forEach(function(s){
+    var body = s.body;
+    if (s.key === "amaCalculations") body = op.rating ? op.rating : AMA_MARKER;
+    if (s.key === "opener" || s.key === "signatureBlock") out += '<p class="od-p">' + esc(body) + '</p>';
+    else out += '<div class="od-h">' + esc(s.title) + '</div><p class="od-p">' + esc(body) + '</p>';
+  });
+  if (op.approved) out += '<p class="od-p">Approved and attested by ' + OPINION_ATTEST_NAME + ' on ' + opinionAttestIso(m) + ' in MEDEXEC.</p>';
+  return out + '</div>';
+}
 var ACTIVITY = [
   ["11/04/2026 09:12", "Matter created", "Intake started from the scanned record upload (445 pages)."],
   ["11/04/2026 09:13", "Intake items missing at creation (Extraction Module)", "Operative report; prior lumbar imaging — recorded as missing at creation."],
@@ -337,18 +414,151 @@ function matterHTML(m, step, mode){
   return head + panel + '<div class="detail-grid"><div>'+left+'</div><div>'+matterDetailsCard(m, step)+'</div></div>'
   + '<div style="font-size:12.5px;color:var(--ink-soft)">Status: <span class="'+badgeClass(st)+'">'+st+'</span></div>';
 }
+var RS_LOGO_SVG = '<svg width="44" height="44" viewBox="0 0 100 100" fill="none" style="margin-bottom:6px"><path d="M50,82 A32,32 0 0,1 18.24,53.90" stroke="#10305A" stroke-width="10" stroke-linecap="butt"/><path d="M18.24,46.10 A32,32 0 0,1 50,18" stroke="#10305A" stroke-width="10" stroke-linecap="butt"/><path d="M50,18 A32,32 0 0,1 81.76,46.10" stroke="#2B9BD1" stroke-width="10" stroke-linecap="butt"/><path d="M81.76,53.90 A32,32 0 0,1 50,82" stroke="#2B9BD1" stroke-width="10" stroke-linecap="butt"/><line x1="34" y1="38" x2="58" y2="38" stroke="#10305A" stroke-width="5" stroke-linecap="round"/><line x1="34" y1="62" x2="58" y2="62" stroke="#10305A" stroke-width="5" stroke-linecap="round"/><line x1="18.24" y1="50" x2="56" y2="50" stroke="#10305A" stroke-width="5" stroke-linecap="round"/><line x1="64" y1="50" x2="75" y2="50" stroke="#2B9BD1" stroke-width="5" stroke-linecap="round"/><circle cx="58" cy="50" r="5.4" fill="#3FB878"/></svg>';
+function rsFields(fields){
+  return '<div class="rs-fields">' + fields.map(function(f){
+    return '<div class="rs-field"><span class="rs-label">' + esc(f[0]) + '</span>' + esc(f[1]) + '</div>';
+  }).join("") + '</div>';
+}
+function rsNarrative(items){
+  if (!items.length) return '<p class="rs-p">Undocumented or insufficient information in the reviewed record.</p>';
+  return items.map(function(p){
+    return '<p class="rs-p">' + esc(p.text) + (p.citation ? ' <span class="rs-cite">(' + esc(p.citation) + ')</span>' : '') + '</p>';
+  }).join("");
+}
+function reportDataFor(m, st){
+  var approved = st === "APPROVED";
+  var isHero = m.id === HERO_ID;
+  var d = {
+    title: m.subjectLabel + ", " + m.clientReference,
+    identification: [
+      ["Matter identification", m.clientReference],
+      ["Report date", m.updated],
+      ["Patient / claimant", m.claimantIdentifier],
+      ["Date of birth", m.dobA],
+      ["Date of injury / onset", "See Clinical History"],
+      ["Attorney / requesting party", m.clientName],
+      ["Records reviewed", m.pageCount + " page(s), submitted record set"],
+      ["Record date range", "See individual source-page citations below"],
+      ["Report version", approved ? "1" : "Draft"],
+      ["Review status", approved ? "Reviewed and Approved" : "Draft"]
+    ],
+    scope: DEFAULT_SCOPE,
+    clinicalHistory: [], diagnoses: [], treatment: [], objectiveFindings: [],
+    responseToTreatment: [], workStatus: [], conflicts: [], pageIssues: [],
+    certification: { name: "Mohammed M. Morgan, M.D.", role: "Physician",
+      version: approved ? "1" : "[Pending]",
+      when: approved ? (isHero ? "11/04/2026, 15:35 UTC" : "11/02/2026, 15:05 UTC") : "[Pending]" },
+    expertOpinion: null,
+    summary: [],
+    reading: ["This report is based on a medical record of " + m.pageCount + " pages. Page-level reading measurements were not captured for this record, which was received before the current reading-verification process was in place. The record was read in full and reviewed in the ordinary course."],
+    versionLabel: approved ? "Version 1 · " + m.updated : "Draft"
+  };
+  if (isHero) {
+    d.clinicalHistory = HERO_NARRATIVE.clinicalHistory;
+    d.diagnoses = HERO_NARRATIVE.diagnoses;
+    d.treatment = HERO_TREATMENT;
+    d.objectiveFindings = HERO_NARRATIVE.objectiveFindings;
+    d.responseToTreatment = HERO_NARRATIVE.responseToTreatment;
+    d.workStatus = HERO_NARRATIVE.workStatus;
+    d.conflicts = HERO_CONFLICTS;
+    d.pageIssues = HERO_PAGE_ISSUES;
+    d.reading = HERO_READING;
+    var seen = {};
+    ["clinicalHistory", "diagnoses", "objectiveFindings", "responseToTreatment", "workStatus"].forEach(function(k){
+      HERO_NARRATIVE[k].forEach(function(p){
+        if (p.key && !seen[p.key]) { seen[p.key] = 1; d.summary.push({ key: p.key, text: p.text, citation: p.citation }); }
+      });
+    });
+  }
+  if (approved && (isHero || m.id === "cmw2demo004approved")) {
+    var opState = isHero ? S.op : { draft: true, inReview: true, rating: DEMO_RATING, approved: true };
+    if (opState.approved) d.expertOpinion = { text: opinionTextPlain(m, opState), author: OPINION_ATTEST_NAME, date: m.updated };
+  }
+  return d;
+}
+/* The report document itself — same elements, order, headings, citation
+   style, blocks and footer as the real screen report (report/page.tsx)
+   and PDF (report-pdf.ts): header block, A, B, I–XII. */
+function reportSheetHTML(m, st){
+  var d = reportDataFor(m, st);
+  var out = '<div class="report-sheet">';
+  out += '<div class="rs-head">' + RS_LOGO_SVG
+    + '<div class="rs-brand">MEDEXEC</div>'
+    + '<div class="rs-tagline">MEDICAL EXECUTIVE SUMMARIES</div>'
+    + '<div class="rs-doctitle">PERTINENT MEDICAL RECORD SUMMARY</div>'
+    + '<div class="rs-title">' + esc(d.title) + '</div>'
+    + '<div class="rs-conf">CONFIDENTIAL — FOR AUTHORIZED MEDICAL-LEGAL REVIEW</div></div>';
+  out += '<div class="rs-h">A. Report Identification</div>' + rsFields(d.identification);
+  out += '<div class="rs-h">B. Records Reviewed and Scope</div>'
+    + '<p class="rs-p">' + esc(d.scope) + '</p>'
+    + '<p class="rs-note">Citation convention: cites the sequential uploaded-PDF page number unless the report expressly identifies another numbering system.</p>';
+  out += '<div class="rs-h">I. Clinical History</div>' + rsNarrative(d.clinicalHistory);
+  out += '<div class="rs-h">II. Diagnoses</div>' + rsNarrative(d.diagnoses);
+  out += '<div class="rs-h">III. Chronological Treatment</div>';
+  if (!d.treatment.length) {
+    out += '<p class="rs-p" style="color:var(--ink-soft)">No dated treatment encounters documented.</p>';
+  } else {
+    out += '<table class="rs-table"><thead><tr><th>Date</th><th>Provider / Facility</th><th>Treatment / Procedure</th><th>Source Page</th></tr></thead><tbody>'
+      + d.treatment.map(function(r){ return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td style="color:#3457D5">' + esc(r[3]) + '</td></tr>'; }).join("")
+      + '</tbody></table>';
+  }
+  out += '<div class="rs-h">IV. Objective Findings</div>' + rsNarrative(d.objectiveFindings);
+  out += '<div class="rs-h">V. Response to Treatment</div>' + rsNarrative(d.responseToTreatment);
+  out += '<div class="rs-h">VI. Work Status and Restrictions</div>' + rsNarrative(d.workStatus);
+  out += '<div class="rs-h">VII. Conflicting or Inconsistent Evidence</div>';
+  if (!d.conflicts.length) {
+    out += '<p class="rs-p" style="color:var(--ink-soft)">No conflicts identified in this review. Automated conflict detection has limitations — a human reviewer should verify.</p>';
+  } else {
+    out += d.conflicts.map(function(c){
+      return '<div class="rs-card"><div style="font-weight:700;font-size:13px;margin-bottom:6px">' + esc(c.title) + '</div>'
+        + '<div style="font-size:12px;margin-bottom:4px"><strong>Source A:</strong> ' + esc(c.sourceA) + ' &nbsp;&nbsp; <strong>Source B:</strong> ' + esc(c.sourceB) + '</div>'
+        + '<div style="margin-bottom:4px"><strong>Reviewer disposition:</strong> ' + esc(c.disposition) + '</div>'
+        + '<div style="color:var(--ink-soft)"><strong>Rationale:</strong> ' + esc(c.rationale) + '</div></div>';
+    }).join("");
+  }
+  out += '<div class="rs-h">VIII. Data Completeness Notes</div>';
+  if (!d.pageIssues.length) {
+    out += '<p class="rs-p" style="color:var(--ink-soft)">No OCR or page-level issues flagged in this review. Completeness was not independently verified — a human reviewer should confirm all referenced records are present.</p>';
+  } else {
+    out += '<p style="font-size:12px;color:var(--ink-soft);margin:0 0 10px">The following pages could not be automatically read at sufficient confidence (OCR) or reliably parsed (clinical extraction) and were manually reviewed against the source record before this report was approved.</p>'
+      + d.pageIssues.map(function(n){
+        return '<div class="rs-card"><div style="font-weight:700;font-size:13px;margin-bottom:4px">Page ' + n.page + (n.file ? ' · ' + esc(n.file) : '') + '</div>'
+          + '<div style="font-size:11px;color:var(--ink-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:.03em">' + esc(n.reason) + '</div>'
+          + (n.detail ? '<div style="margin-bottom:6px">' + esc(n.detail) + '</div>' : '')
+          + '<div><strong>Reviewer finding:</strong> ' + esc(n.finding) + '</div>'
+          + '<div style="font-size:11px;color:var(--ink-soft);margin-top:4px">Reviewed by ' + esc(n.by) + ' on ' + esc(n.at) + '</div></div>';
+      }).join("");
+  }
+  out += '<div class="rs-h">IX. Reviewer Certification and Approval</div>'
+    + '<p style="font-size:12px;line-height:1.6;margin:0 0 12px">I certify that I reviewed this Pertinent Medical Record Summary, its source-page citations, and the disposition of identified conflicting evidence. My approval applies only to the report version identified below.</p>'
+    + rsFields([["Reviewer name and credentials", d.certification.name], ["Reviewer role / level", d.certification.role], ["Report version approved", d.certification.version], ["Approval date and time", d.certification.when]])
+    + '<p class="rs-note" style="font-size:10.5px;margin-top:10px">Release control: an unapproved draft should not be distributed to an attorney or other end user as a final report.</p>';
+  if (d.expertOpinion) {
+    out += '<div class="rs-h">X. Expert Opinion</div>'
+      + '<p class="rs-p" style="white-space:pre-line">' + esc(d.expertOpinion.text) + '</p>'
+      + '<p style="font-size:11.5px;color:var(--ink-soft);font-style:italic;margin:0">— ' + esc(d.expertOpinion.author) + ', ' + esc(d.expertOpinion.date) + '</p>';
+  }
+  if (d.summary.length) {
+    out += '<div class="rs-h">XI. Summary of Records</div>'
+      + '<p style="font-size:12px;color:var(--ink-soft);margin:0 0 10px">Code definitions for all citations referenced in this report.</p>'
+      + d.summary.map(function(e){
+        return '<div style="margin-bottom:10px"><span style="font-weight:700;font-size:12.5px">[' + esc(e.key) + ']</span> <span style="font-size:12.5px;line-height:1.55">' + esc(e.text) + '</span>'
+          + (e.citation ? '<div style="font-size:11px;color:var(--ink-soft);font-style:italic">Source: ' + esc(e.citation) + '</div>' : '') + '</div>';
+      }).join("");
+  }
+  out += '<div class="rs-h">XII. Reading and Verification</div>'
+    + d.reading.map(function(p){ return '<p style="font-size:12.5px;line-height:1.6;margin:0 0 10px">' + esc(p) + '</p>'; }).join("");
+  out += '<div class="rs-foot"><span>MedExec — Evidence. Verified.</span><span>' + esc(d.versionLabel) + '</span></div>';
+  return out + '</div>';
+}
 function reportHTML(m, step){
   var st = m.id===HERO_ID ? heroStatus(step) : matterStatus(m, step);
-  var secs = REPORT_SECTIONS.map(function(s){
-    var body = s[1];
-    if (s[0].indexOf("A.")===0) body = "Matter "+m.clientReference+" · Claim "+m.claimNumber+" · "+m.claimantIdentifier+" · "+m.matterType+" · "+m.jurisdiction+". Synthetic demo data — no real patient information.";
-    return '<div class="report-sec"><h4>'+esc(s[0])+'</h4><p>'+esc(body)+'</p></div>';
-  }).join("");
   return '<a href="#" data-open="'+m.id+'" style="font-size:13px">← Back to Matter</a>'
   + '<div class="eyebrow" style="margin-top:8px">'+esc(m.id)+' · '+esc(m.clientReference)+'</div><h1 class="page">Pertinent Report — '+esc(m.subjectLabel)+'</h1>'
   + '<span class="demo-tag">SYNTHETIC DEMO DATA</span>'
   + (st==="APPROVED" ? '<div class="approved-banner">APPROVED — reviewer certification recorded. Export released.</div>' : '<div class="draft-banner">IN CLINICAL REVIEW — not yet approved</div>')
-  + '<div class="card">'+secs+'</div>';
+  + reportSheetHTML(m, st);
 }
 function opinionHTML(m, op, interactive){
   var head = '<a href="#" data-open="'+m.id+'" style="font-size:13px">← Back to Matter</a>'
@@ -366,11 +576,7 @@ function opinionHTML(m, op, interactive){
     ? '<div class="conflict-box" style="background:#f2f8f6;border-color:#bfe6da"><strong>AMA rating entered by the expert:</strong> '+esc(op.rating)+'<div style="color:var(--ink-soft);margin-top:4px">Flag dispositioned by the named expert — the agent never supplies the rating.</div></div>'
     : '<div class="ama-flag"><strong>AMA rating flags (approval is blocked until dispositioned):</strong><br>AMA CALCULATIONS — [EXPERT RATING REQUIRED]. The agent does not rate impairment; the expert must enter the rating under the AMA Guides before approval can proceed.</div>';
   var gaps = '<p style="font-size:13px;margin:8px 0"><strong>Gaps the record does not support:</strong> no prior lumbar imaging in the record; no operative report (no surgery recorded). The draft claims nothing beyond the cited record.</p>';
-  var secs = OPINION_SECTIONS.map(function(s){
-    var body = s[1];
-    if (s[0]==="AMA CALCULATIONS" && op.rating) body = op.rating + " — entered and attested by the expert.";
-    return '<div class="report-sec"><h4>'+esc(s[0])+'</h4><p>'+esc(body)+'</p></div>';
-  }).join("");
+  var docView = '<div class="eyebrow" style="margin:12px 0 8px">OPINION DOCUMENT — AS EXPORTED (EXACT FORMAT)</div>' + opinionDocHTML(m, op);
   var review = "";
   if (interactive) {
     if (!op.inReview && !op.approved) review = '<button type="button" class="btn btn-primary" id="beginReviewBtn">Begin Expert Review</button>';
@@ -381,7 +587,7 @@ function opinionHTML(m, op, interactive){
     ? '<div class="approved-banner">APPROVED — attested by Mohammed M. Morgan, M.D. · attestation recorded before export</div>'
     : '<div class="draft-banner">DRAFT — PENDING EXPERT REVIEW</div>';
   return head + inputs
-  + '<div class="card"><div class="eyebrow">EXPERT OPINION AGENT</div>' + banner + amaBlock + gaps + '<div class="eyebrow" style="margin:12px 0 8px">OPINION SECTIONS</div>' + secs
+  + '<div class="card"><div class="eyebrow">EXPERT OPINION AGENT</div>' + banner + amaBlock + gaps + docView
   + '<div style="font-size:12.5px;color:var(--ink-soft)">Insert macro… <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:12px" onclick="return false">Insert</button></div></div>'
   + '<div class="card"><div class="eyebrow">REVIEW, APPROVAL &amp; EXPORT</div><h3 class="card-title">Review, Approval &amp; Export</h3>' + review + exports
   + (op.approved ? '<p style="font-size:13px;margin-top:10px"><strong>Approved and attested by</strong> Mohammed M. Morgan, M.D. — recorded in the activity audit trail.</p>' : '')
@@ -398,14 +604,27 @@ function auditsHTML(){
   + '<tr><td>Coverage statement (§XII)</td><td><span class="badge badge-approved">PASS</span></td><td>Approval gated on actual recorded coverage</td></tr>'
   + '</tbody></table></div>';
 }
-function activityHTML(){
+function activityCardHTML(){
   var rows = ACTIVITY.map(function(a){
     return '<div class="activity-row"><div class="when">'+esc(a[0])+'</div><div><div style="font-weight:600;font-size:13.5px">'+esc(a[1])+'</div><div style="color:var(--ink-soft);font-size:12.5px">'+esc(a[2])+'</div></div></div>';
   }).join("");
+  return '<div class="card"><div class="eyebrow">ACTIVITY — AUDIT TRAIL</div><h3 class="card-title">Activity Log</h3>'+rows+'</div>';
+}
+function exportCardHTML(){
+  return '<div class="card"><div class="eyebrow">FINAL REPORT + EXPORT</div><h3 class="card-title">Export</h3><p style="font-size:13.5px">The approved Pertinent Report and Expert Opinion export from the Reports page. On the live platform these buttons generate the real files; in this demo they confirm the release state.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn btn-primary" data-export="pdf">Export PDF</button><button type="button" class="btn btn-primary" data-export="docx">Export DOCX</button></div></div>';
+}
+function activityHTML(){
   return '<a href="#" data-open="'+HERO_ID+'" style="font-size:13px">← Back to Matter</a>'
   + '<div class="eyebrow" style="margin-top:8px">'+HERO_ID+' · SYNTH-WC-001</div><h1 class="page">Activity Log</h1><span class="demo-tag">SYNTHETIC DEMO DATA</span>'
-  + '<div class="card">'+rows+'</div>'
-  + '<div class="card"><div class="eyebrow">FINAL REPORT + EXPORT</div><h3 class="card-title">Export</h3><p style="font-size:13.5px">The approved Pertinent Report and Expert Opinion export from the Reports page. On the live platform these buttons generate the real files; in this demo they confirm the release state.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn btn-primary" data-export="pdf">Export PDF</button><button type="button" class="btn btn-primary" data-export="docx">Export DOCX</button></div></div>';
+  + activityCardHTML() + exportCardHTML();
+}
+/* Step 8 — the released report itself (exact format, APPROVED state with
+   Section X and certification completed), then the audit trail + export. */
+function finalHTML(){
+  return '<div class="eyebrow">'+HERO_ID+' · SYNTH-WC-001</div><h1 class="page">Final Report — Approved &amp; Released</h1><span class="demo-tag">SYNTHETIC DEMO DATA</span>'
+  + reportSheetHTML(hero(), "APPROVED")
+  + '<div style="height:18px"></div>'
+  + activityCardHTML() + exportCardHTML();
 }
 function reportsHTML(step){
   var rows = MATTERS.map(function(m){
@@ -432,7 +651,7 @@ function currentViewHTML(){
     if (v==="matter") return matterHTML(hero(), S.step, S.step===2?"extraction":(S.step===6?"agent":"intake"));
     if (v==="report") return reportHTML(hero(), S.step);
     if (v==="opinion") return opinionHTML(hero(), S.op, true);
-    if (v==="final") return activityHTML();
+    if (v==="final") return finalHTML();
   }
   if (S.view==="dashboard") return dashboardHTML(S.step);
   if (S.view==="matters") return mattersHTML(S.step);
@@ -552,7 +771,7 @@ if (typeof document !== "undefined") {
   }
 }
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { MATTERS: MATTERS, STEPS: STEPS, S: S, dashboardHTML: dashboardHTML, mattersHTML: mattersHTML, matterHTML: matterHTML, reportHTML: reportHTML, opinionHTML: opinionHTML, auditsHTML: auditsHTML, activityHTML: activityHTML, reportsHTML: reportsHTML, guidebarHTML: guidebarHTML, currentViewHTML: currentViewHTML, applyStepSideEffects: applyStepSideEffects, exportGate: exportGate, heroStatus: heroStatus, DEMO_RATING: DEMO_RATING };
+  module.exports = { MATTERS: MATTERS, STEPS: STEPS, S: S, dashboardHTML: dashboardHTML, mattersHTML: mattersHTML, matterHTML: matterHTML, reportHTML: reportHTML, reportSheetHTML: reportSheetHTML, opinionHTML: opinionHTML, opinionDocHTML: opinionDocHTML, opinionTextPlain: opinionTextPlain, auditsHTML: auditsHTML, activityHTML: activityHTML, finalHTML: finalHTML, reportsHTML: reportsHTML, guidebarHTML: guidebarHTML, currentViewHTML: currentViewHTML, applyStepSideEffects: applyStepSideEffects, exportGate: exportGate, heroStatus: heroStatus, DEMO_RATING: DEMO_RATING };
 }
 
 </script>
