@@ -96,6 +96,7 @@ h3.card-title{font-family:var(--serif);font-size:17px;margin:2px 0 10px}
 .rs-title{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--navy);margin-top:6px}
 .rs-conf{font-size:9.5px;color:var(--ink-soft);margin-top:4px}
 .rs-h{font-family:var(--serif);font-size:14.5px;font-weight:600;border-bottom:1px solid var(--line);padding-bottom:5px;margin:22px 0 10px;color:var(--navy)}
+.rs-subh{font-family:var(--serif);font-size:13px;font-weight:700;color:var(--navy);margin:12px 0 4px}
 .rs-fields{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
 .rs-field{font-size:12.5px;margin-bottom:10px}
 .rs-label{color:var(--ink-soft);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:2px}
@@ -107,13 +108,10 @@ h3.card-title{font-family:var(--serif);font-size:17px;margin:2px 0 10px}
 .rs-table td{padding:8px;border-bottom:1px solid #EEF1F6;vertical-align:top}
 .rs-card{border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px;font-size:12.5px}
 .rs-foot{border-top:1px solid var(--line);margin-top:30px;padding-top:12px;font-size:10.5px;color:var(--ink-soft);display:flex;justify-content:space-between}
-/* ===== Expert Opinion document (mirrors renderOpinionPdf) ===== */
-.opinion-doc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:28px 32px;color:#000;text-align:left}
-.od-draft{color:#B00020;font-size:10px;text-align:center;font-weight:700;letter-spacing:.03em;margin-bottom:12px}
-.od-title{font-size:15px;font-weight:700}
-.od-subject{font-size:10.5px;color:#444;margin-bottom:6px}
-.od-h{font-size:12px;font-weight:700;margin:16px 0 4px}
-.od-p{font-size:12px;line-height:1.6;text-align:justify;margin:0 0 8px;white-space:pre-line}
+/* ===== Expert Opinion document — the real report format (medexec-app
+   expert-opinion-render.ts at c99a7d4): report sheet, EXPERT OPINION
+   doctitle, A. Report Identification, Certification and Attestation ===== */
+.od-draft{color:#B00020;font-size:11px;text-align:center;font-weight:700;letter-spacing:.03em;margin:0 0 14px}
 .two-input{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .input-card{border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px;background:#fbfcfe}
 .input-card h5{margin:0 0 4px;font-size:13.5px}
@@ -271,20 +269,107 @@ function opinionTextPlain(m, op){
   if (op.approved) lines.push("Approved and attested by " + OPINION_ATTEST_NAME + " on " + opinionAttestIso(m) + " in MEDEXEC.");
   return lines.join("\n").trim();
 }
-/* The opinion document view — mirrors renderOpinionPdf layout: red DRAFT
-   label on top when unapproved, "Expert Opinion" title, subject label in
-   gray, bold section headings, justified body, attestation line. */
+/* Opinion report-format helpers — mirror medexec-app
+   src/lib/expert-opinion-report.ts (buildOpinionReportData,
+   opinionStatusLabel) at c99a7d4. The demo's walkthrough states map to
+   the product lifecycle: draft only = AGENT_DRAFT v1; in review without
+   a rating = EXPERT_REVIEW v1; rating entered = REVISED v2; attested =
+   APPROVED v2. */
+function opinionVersionFor(op){ return (op.approved || (op.inReview && op.rating)) ? 2 : 1; }
+function opinionStatusFor(op){
+  if (op.approved) return "Approved and attested";
+  if (op.inReview && op.rating) return "Revised — pending expert approval";
+  if (op.inReview) return "In expert review — not approved";
+  return "Agent draft — pending expert review";
+}
+function opinionAttestDisplay(m){ /* formatDateTimeMMDDYYYYUtc */
+  var d = new Date(opinionAttestIso(m));
+  function p2(n){ return (n < 10 ? "0" : "") + n; }
+  return p2(d.getUTCMonth() + 1) + "/" + p2(d.getUTCDate()) + "/" + d.getUTCFullYear() + " " + p2(d.getUTCHours()) + ":" + p2(d.getUTCMinutes()) + " UTC";
+}
+function opinionFooterDate(m, op){
+  if (!op.approved) return m.updated;
+  var d = new Date(opinionAttestIso(m));
+  function p2(n){ return (n < 10 ? "0" : "") + n; }
+  return p2(d.getUTCMonth() + 1) + "/" + p2(d.getUTCDate()) + "/" + d.getUTCFullYear();
+}
+/* Inline citations render as the product renders them — bold citation
+   blue (mirrors splitCitationRuns in expert-opinion-report.ts). */
+function opinionCiteHTML(text){
+  return esc(text).replace(/\[CIT[^\]]*\]|\[[^\]]*·[^\]]*\]|\(Visit Note\)|\([^\n()]*\.pdf, p\. \d+\)/g, function(tok){ return '<span class="rs-cite">' + tok + '</span>'; });
+}
+/* Section X blocks — mirrors parseOpinionText: scaffold titles become
+   navy sub-headings, the signature block and the attestation line are
+   their own blocks, the DRAFT label / [FLAG: …] lines render in red. */
+var OPINION_HEADINGS = {};
+OPINION_SECTIONS.forEach(function(s){ if (s.key !== "opener" && s.key !== "signatureBlock") OPINION_HEADINGS[s.title] = 1; });
+function opinionBlocksHTML(text){
+  var lines = String(text == null ? "" : text).split("\n").map(function(l){ return l.trim(); }).filter(function(l){ return !!l; });
+  var noteIdx = -1;
+  lines.forEach(function(l, i){ if (l.indexOf("Expert signature on approval") !== -1) noteIdx = i; });
+  var out = "";
+  lines.forEach(function(l, i){
+    if (l === "DRAFT — PENDING EXPERT REVIEW") out += '<div class="od-draft">' + esc(l) + '</div>';
+    else if (l.indexOf("[FLAG:") === 0) out += '<p class="rs-p" style="color:#B00020">' + esc(l) + '</p>';
+    else if (l.indexOf("Approved and attested by ") === 0) out += '<p class="rs-p" style="margin-top:10px">' + opinionCiteHTML(l) + '</p>';
+    else if (OPINION_HEADINGS[l]) out += '<div class="rs-subh">' + esc(l) + '</div>';
+    else if (i === noteIdx) out += '<p class="rs-note">' + esc(l) + '</p>';
+    else if (noteIdx > 0 && i === noteIdx - 1) out += '<p class="rs-p" style="margin-top:10px">' + esc(l) + '</p>';
+    else out += '<p class="rs-p">' + opinionCiteHTML(l) + '</p>';
+  });
+  return out;
+}
+/* The opinion document view — the opinion's own document in the EXACT
+   report format (medexec-app expert-opinion-render.ts at c99a7d4):
+   brand header block, "EXPERT OPINION" + "<Patient Name>, <Case Number>"
+   title, CONFIDENTIAL line, red DRAFT label pre-approval, A. Report
+   Identification grid, verbatim opener, scaffold sections under their
+   exact headings, signature block, APPROVED-only Certification and
+   Attestation block, report footer. */
 function opinionDocHTML(m, op){
-  var out = '<div class="opinion-doc">';
+  var version = opinionVersionFor(op);
+  var out = '<div class="report-sheet">';
+  out += '<div class="rs-head">' + RS_LOGO_SVG
+    + '<div class="rs-brand">MEDEXEC</div>'
+    + '<div class="rs-tagline">MEDICAL EXECUTIVE SUMMARIES</div>'
+    + '<div class="rs-doctitle">EXPERT OPINION</div>'
+    + '<div class="rs-title">' + esc(m.subjectLabel + ", " + m.clientReference) + '</div>'
+    + '<div class="rs-conf">CONFIDENTIAL — FOR AUTHORIZED MEDICAL-LEGAL REVIEW</div></div>';
   if (!op.approved) out += '<div class="od-draft">DRAFT — PENDING EXPERT REVIEW</div>';
-  out += '<div class="od-title">Expert Opinion</div><div class="od-subject">' + esc(m.subjectLabel) + '</div>';
+  out += '<div class="rs-h">A. Report Identification</div>' + rsFields([
+    ["Matter identification", m.clientReference],
+    ["Report date", m.updated],
+    ["Patient / claimant", m.subjectLabel],
+    ["Date of birth", m.dobA],
+    ["Date of injury / onset", m.doi],
+    ["Attorney / requesting party", m.clientName],
+    ["Expert / opinion author", OPINION_ATTEST_NAME],
+    ["Basis — records combined", "Pertinent Report v1 (APPROVED) · Visit note: synthetic-visit-note.pdf"],
+    ["Opinion version", String(version)],
+    ["Opinion status", opinionStatusFor(op)]
+  ]);
   OPINION_SECTIONS.forEach(function(s){
     var body = s.body;
     if (s.key === "amaCalculations") body = op.rating ? op.rating : AMA_MARKER;
-    if (s.key === "opener" || s.key === "signatureBlock") out += '<p class="od-p">' + esc(body) + '</p>';
-    else out += '<div class="od-h">' + esc(s.title) + '</div><p class="od-p">' + esc(body) + '</p>';
+    if (s.key === "opener") out += '<p class="rs-p">' + opinionCiteHTML(body) + '</p>';
+    else if (s.key === "signatureBlock") {
+      var sigLines = body.split("\n");
+      out += '<p class="rs-p" style="margin-top:14px">' + esc(sigLines[0]) + '</p>';
+      for (var i = 1; i < sigLines.length; i++) out += '<p class="rs-note">' + esc(sigLines[i]) + '</p>';
+    }
+    else out += '<div class="rs-h">' + esc(s.title) + '</div><p class="rs-p">' + opinionCiteHTML(body) + '</p>';
   });
-  if (op.approved) out += '<p class="od-p">Approved and attested by ' + OPINION_ATTEST_NAME + ' on ' + opinionAttestIso(m) + ' in MEDEXEC.</p>';
+  if (op.approved) {
+    out += '<div class="rs-h">Certification and Attestation</div>'
+      + '<p class="rs-p">Approved and attested by ' + OPINION_ATTEST_NAME + ' on ' + opinionAttestIso(m) + ' in MEDEXEC.</p>'
+      + rsFields([
+        ["Expert name", OPINION_ATTEST_NAME],
+        ["Opinion version approved", String(version)],
+        ["Attestation date and time", opinionAttestDisplay(m)],
+        ["Opinion status", "Approved and attested"]
+      ]);
+  }
+  out += '<div class="rs-foot"><span>MedExec — Evidence. Verified. · Version ' + version + ' · ' + esc(opinionFooterDate(m, op)) + '</span></div>';
   return out + '</div>';
 }
 var ACTIVITY = [
@@ -536,7 +621,7 @@ function reportSheetHTML(m, st){
     + '<p class="rs-note" style="font-size:10.5px;margin-top:10px">Release control: an unapproved draft should not be distributed to an attorney or other end user as a final report.</p>';
   if (d.expertOpinion) {
     out += '<div class="rs-h">X. Expert Opinion</div>'
-      + '<p class="rs-p" style="white-space:pre-line">' + esc(d.expertOpinion.text) + '</p>'
+      + opinionBlocksHTML(d.expertOpinion.text)
       + '<p style="font-size:11.5px;color:var(--ink-soft);font-style:italic;margin:0">— ' + esc(d.expertOpinion.author) + ', ' + esc(d.expertOpinion.date) + '</p>';
   }
   if (d.summary.length) {
@@ -771,7 +856,7 @@ if (typeof document !== "undefined") {
   }
 }
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { MATTERS: MATTERS, STEPS: STEPS, S: S, dashboardHTML: dashboardHTML, mattersHTML: mattersHTML, matterHTML: matterHTML, reportHTML: reportHTML, reportSheetHTML: reportSheetHTML, opinionHTML: opinionHTML, opinionDocHTML: opinionDocHTML, opinionTextPlain: opinionTextPlain, auditsHTML: auditsHTML, activityHTML: activityHTML, finalHTML: finalHTML, reportsHTML: reportsHTML, guidebarHTML: guidebarHTML, currentViewHTML: currentViewHTML, applyStepSideEffects: applyStepSideEffects, exportGate: exportGate, heroStatus: heroStatus, DEMO_RATING: DEMO_RATING };
+  module.exports = { MATTERS: MATTERS, STEPS: STEPS, S: S, dashboardHTML: dashboardHTML, mattersHTML: mattersHTML, matterHTML: matterHTML, reportHTML: reportHTML, reportSheetHTML: reportSheetHTML, opinionHTML: opinionHTML, opinionDocHTML: opinionDocHTML, opinionBlocksHTML: opinionBlocksHTML, opinionTextPlain: opinionTextPlain, auditsHTML: auditsHTML, activityHTML: activityHTML, finalHTML: finalHTML, reportsHTML: reportsHTML, guidebarHTML: guidebarHTML, currentViewHTML: currentViewHTML, applyStepSideEffects: applyStepSideEffects, exportGate: exportGate, heroStatus: heroStatus, DEMO_RATING: DEMO_RATING };
 }
 
 </script>
