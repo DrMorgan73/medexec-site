@@ -260,6 +260,28 @@ function findProvisionByToken(token) {
   return provisionedList().find(a => a.token && a.token === t) || null;
 }
 
+/* Access notifications (DrMorgan's order, 2026-11-04): on a SUCCESSFUL
+   activation we tell the server endpoint (/api/demo-notify), which
+   emails DrMorgan who activated and when. Fire-and-forget — a
+   notification failure must never block or break the activation.
+   Failed attempts never call this. The seed account can never be
+   activated (it has no token), and the endpoint enforces the same
+   seed silence server-side. */
+const DEMO_SEED_EMAIL = "demo@medexec.example";
+function notifyDemoAccess(event, who) {
+  try {
+    const email = normalizeEmail(who && who.email);
+    if (!email || email === DEMO_SEED_EMAIL) return;
+    if (typeof fetch !== "function") return;
+    fetch("/api/demo-notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event, name: (who && who.name) || "", email }),
+      keepalive: true
+    }).catch(() => {});
+  } catch (e) { /* notifications never break the demo */ }
+}
+
 /* The gate every activation passes through, in order:
    unknown → revoked → paused → already used → ready. */
 function activationState(token) {
@@ -293,12 +315,13 @@ function demoActivate(token, password, confirm) {
   saveActivations(acts);
   const session = { name: prov.name || email, email };
   DemoStore.set(SESSION_KEY, session);
+  notifyDemoAccess("activation", session);
   return { ok: true, account: { name: session.name, email } };
 }
 
 /* Exposed for the node smoke test; harmless in the browser. */
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { DemoStore, findProvisionByToken, activationState, demoActivate, findAccount };
+  module.exports = { DemoStore, findProvisionByToken, activationState, demoActivate, findAccount, notifyDemoAccess };
 }
 </script>
 

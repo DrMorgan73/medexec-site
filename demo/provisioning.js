@@ -23,6 +23,13 @@
    Static-stack note: this is the client-side simulation's data layer.
    Statuses are enforced by the portal/activation logic in the browser;
    real per-user auth remains the named next step before scale-out.
+
+   Access notifications (2026-11-04): a successful activation or login
+   calls /api/demo-notify (api/demo-notify.js), which emails DrMorgan
+   who accessed the demo and when — never on a failed attempt, and
+   never for the seed account. Sending needs RESEND_API_KEY in THIS
+   project's Vercel env; without it the endpoint logs a NO-OP and the
+   demo flow is unaffected.
    ===================================================================== */
 const DEMO_PROVISIONED_ACCOUNTS = [
   {

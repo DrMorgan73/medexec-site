@@ -353,6 +353,27 @@ function findAccount(email) {
   return loadAccounts().find(a => normalizeEmail(a.email) === e) || null;
 }
 
+/* Access notifications (DrMorgan's order, 2026-11-04): on a SUCCESSFUL
+   login we tell the server endpoint (/api/demo-notify), which emails
+   DrMorgan who signed in and when. Fire-and-forget — a notification
+   failure must never block or break the sign-in. Failed attempts never
+   call this. The seed account is internal testing and stays silent;
+   the endpoint independently enforces the same silence server-side. */
+const DEMO_SEED_EMAIL = "demo@medexec.example";
+function notifyDemoAccess(event, who) {
+  try {
+    const email = normalizeEmail(who && who.email);
+    if (!email || email === DEMO_SEED_EMAIL) return;
+    if (typeof fetch !== "function") return;
+    fetch("/api/demo-notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event, name: (who && who.name) || "", email }),
+      keepalive: true
+    }).catch(() => {});
+  } catch (e) { /* notifications never break the demo */ }
+}
+
 /* Login: provisioned accounts only, status-gated. There is no signup —
    accounts come from MEDEXEC provisioning + the one-time activation
    link (demo/activate/), which is where the password gets set. */
@@ -371,6 +392,7 @@ function demoLogin(email, password) {
   if (account.password !== String(password || "")) return { ok: false, error: "Incorrect password for this demo account." };
   const session = { name: account.name, email: normalizeEmail(account.email) };
   DemoStore.set(SESSION_KEY, session);
+  notifyDemoAccess("login", session);
   return { ok: true, session };
 }
 
@@ -379,7 +401,7 @@ function demoSignOut() { DemoStore.remove(SESSION_KEY); }
 
 /* Exposed for the node smoke test; harmless in the browser. */
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { DEMO_SEED_ACCOUNTS, DemoStore, findProvisioned, effectiveStatus, loadActivations, demoLogin, demoSession, demoSignOut, findAccount };
+  module.exports = { DEMO_SEED_ACCOUNTS, DemoStore, findProvisioned, effectiveStatus, loadActivations, demoLogin, demoSession, demoSignOut, findAccount, notifyDemoAccess };
 }
 </script>
 
