@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Activate your MEDEXEC demo account | getmedexec.com</title>
+<meta name="description" content="Activate a MEDEXEC demo account provisioned for you: set your own password from your one-time activation link. Access is for those who have signed the MEDEXEC NDA.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --paper: #f4f6f5;
+    --surface: #ffffff;
+    --ink: #102b32;
+    --muted: #506268;
+    --faint: #d8dfdd;
+    --rule: #b9c6c3;
+    --teal: #0b6f70;
+    --teal-dark: #074b4c;
+    --teal-soft: #dcefee;
+    --navy: #071f3d;
+    --coral: #d45b3f;
+    --yellow: #f0c84b;
+    --yellow-soft: #fff3bd;
+    --shadow: 0 16px 44px rgba(16, 43, 50, .1);
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: Helvetica, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #091619;
+      --surface: #102328;
+      --ink: #edf5f3;
+      --muted: #afc2c0;
+      --faint: #263e42;
+      --rule: #3a5558;
+      --teal: #65c5c0;
+      --teal-dark: #95dfda;
+      --teal-soft: #163a3d;
+      --coral: #ff9478;
+      --yellow: #eccd68;
+      --yellow-soft: #3d3519;
+      --shadow: 0 20px 54px rgba(0, 0, 0, .32);
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input { font: inherit; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+  .wrap { max-width: 1220px; margin: 0 auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
+
+  .nav {
+    max-width: 1220px; margin: 0 auto;
+    padding: .7rem clamp(1rem, 4vw, 2.5rem);
+    display: flex; align-items: center; justify-content: flex-end; gap: 1.5rem;
+    border-bottom: 1px solid #d8dfdd; background: #fff;
+    box-shadow: 0 0 0 100vmax #fff; clip-path: inset(0 -100vmax);
+    color: var(--navy); font-size: .88rem; font-weight: 500;
+  }
+  .nav a { text-decoration: none; }
+  .nav-brand { margin-right: auto; flex: 0 0 auto; }
+  .nav-brand img { display: block; width: 9.5rem; height: auto; object-fit: contain; background: #fff; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    min-height: 3rem; padding: .7rem 1.4rem;
+    background: var(--teal); color: #fff; border: 1px solid var(--teal);
+    border-radius: 6px; font-weight: 700; cursor: pointer; text-decoration: none;
+  }
+  .btn:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
+  .btn.secondary { background: transparent; color: var(--teal-dark); border-color: var(--rule); }
+  .btn.secondary:hover { border-color: var(--teal); color: var(--teal); }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: .6rem; margin: 0 0 1.2rem;
+    color: var(--teal-dark); font-weight: 600; font-size: .82rem;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  .eyebrow::before { content: ""; width: 2rem; height: 2px; background: var(--coral); }
+  h2 { font: 600 clamp(1.5rem, 3vw, 2.1rem)/1.15 var(--serif); letter-spacing: -.02em; margin: 0 0 .8rem; text-wrap: balance; }
+  .lede { color: var(--muted); max-width: 640px; font-size: 1.05rem; }
+
+  .section { padding-block: clamp(2.2rem, 5vw, 3.6rem); }
+  .card {
+    background: var(--surface); border: 1px solid var(--faint); border-radius: 10px;
+    box-shadow: var(--shadow); padding: clamp(1.2rem, 3vw, 2rem);
+  }
+  .form-card { max-width: 520px; margin: 0 auto; }
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: .35rem; }
+  .field input {
+    width: 100%; padding: .65rem .8rem; border: 1px solid var(--rule); border-radius: 6px;
+    background: var(--surface); color: var(--ink);
+  }
+  .field .hint { font-size: .82rem; color: var(--muted); margin-top: .3rem; }
+  .form-msg { border-radius: 8px; padding: .8rem 1rem; font-size: .93rem; margin-bottom: 1rem; }
+  .form-msg.error { background: #fdeceb; color: #7c2113; border: 1px solid #f2b8ae; }
+  .form-msg.ok { background: var(--teal-soft); color: var(--teal-dark); border: 1px solid var(--teal); }
+  @media (prefers-color-scheme: dark) { .form-msg.error { background: #3a1710; color: #ffb59f; } }
+  .nda-note {
+    background: var(--yellow-soft); border: 1px solid var(--yellow); border-radius: 8px;
+    padding: .8rem 1rem; font-size: .9rem; margin-bottom: 1.2rem;
+  }
+  .footer { padding: 2rem clamp(1rem, 4vw, 2.5rem) 3rem; border-top: 1px solid var(--faint); color: var(--muted); font-size: .78rem; }
+  .footer-inner { max-width: 1220px; margin: 0 auto; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .muted { color: var(--muted); }
+  .small { font-size: .88rem; }
+</style>
+</head>
+<body>
+<header class="nav">
+  <a class="nav-brand" href="../../" aria-label="MEDEXEC home"><img src="../../logo.png" alt="MEDEXEC — Evidence. Verified."></a>
+  <a href="../">Demo Portal</a>
+</header>
+
+<main>
+  <section>
+    <div class="wrap section">
+      <div class="card form-card">
+        <p class="eyebrow">Demo Portal</p>
+        <h2>Activate your demo account</h2>
+
+        <div id="act-msg"></div>
+
+        <!-- State: link accepted — set a password -->
+        <div id="act-ready" hidden>
+          <div class="nda-note">This activation link is <strong>one-time</strong>: it stops working once you set your password. Demo access is for those who have <strong>signed the MEDEXEC Mutual Confidentiality Agreement (NDA)</strong>.</div>
+          <p class="small">Account: <strong id="act-name"></strong><br><span class="muted" id="act-email"></span></p>
+          <form id="activate-form" novalidate>
+            <div class="field">
+              <label for="ac-password">Choose your password</label>
+              <input id="ac-password" name="password" type="password" autocomplete="new-password" required>
+              <p class="hint">At least 8 characters. MEDEXEC never sends passwords by email — this password is yours alone.</p>
+            </div>
+            <div class="field">
+              <label for="ac-confirm">Confirm password</label>
+              <input id="ac-confirm" name="confirm" type="password" autocomplete="new-password" required>
+            </div>
+            <button class="btn" type="submit" style="width:100%;">Set password &amp; activate</button>
+          </form>
+        </div>
+
+        <!-- State: activated -->
+        <div id="act-done" hidden>
+          <p class="lede" style="font-size:1rem;">Your demo account is active and you are signed in. Next time, sign in from the portal with this email address and the password you just set.</p>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.2rem;">
+            <a class="btn" href="../app/" rel="nofollow">Open the MEDEXEC demo &rarr;</a>
+            <a class="btn secondary" href="../">Go to the Demo Portal</a>
+          </div>
+        </div>
+
+        <!-- State: link refused (unknown / used / paused / revoked) -->
+        <div id="act-blocked" hidden>
+          <p id="act-blocked-text"></p>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.2rem;">
+            <a class="btn secondary" href="../">Go to the Demo Portal</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© 2026 International Empire Consultants, Inc. All rights reserved. · Developed by IEC, Inc.</span>
+    <span><a href="mailto:info@getmedexec.com">info@getmedexec.com</a> · MEDEXEC Demo Portal — synthetic data only</span>
+  </div>
+</footer>
+
+<script src="../provisioning.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   MEDEXEC Demo Portal — activation page.
+   The one door in: MEDEXEC provisions the account (../provisioning.js),
+   the signer arrives from the activation email with a one-time token,
+   and sets their OWN password here. The token dies on use — the
+   activation is recorded in the shared local store the portal reads,
+   so a used link can never set a password again. Links do not expire;
+   access is controlled administratively by the provisioned status
+   (invited / active / paused / revoked) in provisioning.js.
+   Static-stack simulation, same store as the portal (origin-scoped).
+   ===================================================================== */
+
+/* ---- Storage: localStorage in the browser, in-memory under test ---- */
+const DemoStore = (() => {
+  let mem = {};
+  const hasLS = typeof localStorage !== "undefined";
+  return {
+    get(k) {
+      if (hasLS) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+      return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
+    },
+    set(k, v) {
+      if (hasLS) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode */ } }
+      else { mem[k] = v; }
+    },
+    remove(k) {
+      if (hasLS) { try { localStorage.removeItem(k); } catch (e) { /* noop */ } }
+      else { delete mem[k]; }
+    },
+    _reset() { mem = {}; }
+  };
+})();
+
+const ACCOUNTS_KEY = "medexec_demo_accounts";
+const SESSION_KEY = "medexec_demo_session";
+const ACTIVATIONS_KEY = "medexec_demo_activations";
+
+/* Same seed as the portal, so the shared account store merges cleanly. */
+const DEMO_SEED_ACCOUNTS = [
+  { name: "Demo Reviewer", email: "demo@medexec.example", password: "MedexecDemo#2026" }
+];
+
+function normalizeEmail(email) { return String(email || "").trim().toLowerCase(); }
+
+function loadAccounts() {
+  const stored = DemoStore.get(ACCOUNTS_KEY);
+  const accounts = Array.isArray(stored) ? stored.slice() : [];
+  for (const seed of DEMO_SEED_ACCOUNTS) {
+    if (!accounts.some(a => normalizeEmail(a.email) === normalizeEmail(seed.email))) {
+      accounts.push({ name: seed.name, email: normalizeEmail(seed.email), password: seed.password, seed: true });
+    }
+  }
+  return accounts;
+}
+
+function saveAccounts(accounts) { DemoStore.set(ACCOUNTS_KEY, accounts); }
+
+function findAccount(email) {
+  const e = normalizeEmail(email);
+  return loadAccounts().find(a => normalizeEmail(a.email) === e) || null;
+}
+
+function loadActivations() {
+  const stored = DemoStore.get(ACTIVATIONS_KEY);
+  return stored && typeof stored === "object" ? stored : {};
+}
+
+function saveActivations(acts) { DemoStore.set(ACTIVATIONS_KEY, acts); }
+
+function provisionedList() {
+  return typeof DEMO_PROVISIONED_ACCOUNTS !== "undefined" ? DEMO_PROVISIONED_ACCOUNTS : [];
+}
+
+function findProvisionByToken(token) {
+  const t = String(token || "");
+  if (!t) return null;
+  return provisionedList().find(a => a.token && a.token === t) || null;
+}
+
+/* The gate every activation passes through, in order:
+   unknown → revoked → paused → already used → ready. */
+function activationState(token) {
+  const prov = findProvisionByToken(token);
+  if (!prov) return { state: "unknown" };
+  const s = String(prov.status || "invited").toLowerCase();
+  if (s === "revoked") return { state: "revoked", provision: prov };
+  if (s === "paused") return { state: "paused", provision: prov };
+  const existing = findAccount(prov.email);
+  if (loadActivations()[normalizeEmail(prov.email)] || (existing && !existing.seed) || s === "active") {
+    return { state: "used", provision: prov };
+  }
+  return { state: "ready", provision: prov };
+}
+
+function demoActivate(token, password, confirm) {
+  const gate = activationState(token);
+  if (gate.state === "unknown") return { ok: false, error: "This activation link is not valid. Check the link in your email, or contact info@getmedexec.com." };
+  if (gate.state === "revoked") return { ok: false, error: "This activation link has been revoked. Contact info@getmedexec.com." };
+  if (gate.state === "paused") return { ok: false, error: "Access for this account is currently paused. Contact info@getmedexec.com." };
+  if (gate.state === "used") return { ok: false, error: "This activation link has already been used. Sign in with the password you set." };
+  if (String(password || "").length < 8) return { ok: false, error: "Password must be at least 8 characters." };
+  if (password !== confirm) return { ok: false, error: "Passwords do not match." };
+  const prov = gate.provision;
+  const email = normalizeEmail(prov.email);
+  const accounts = loadAccounts().filter(a => normalizeEmail(a.email) !== email);
+  accounts.push({ name: prov.name || email, email, password: String(password) });
+  saveAccounts(accounts);
+  const acts = loadActivations();
+  acts[email] = { activatedAt: new Date().toISOString(), via: "activation-link" };
+  saveActivations(acts);
+  const session = { name: prov.name || email, email };
+  DemoStore.set(SESSION_KEY, session);
+  return { ok: true, account: { name: session.name, email } };
+}
+
+/* Exposed for the node smoke test; harmless in the browser. */
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { DemoStore, findProvisionByToken, activationState, demoActivate, findAccount };
+}
+</script>
+
+<script>
+"use strict";
+/* ===== Activation page wiring (browser only) ===== */
+if (typeof document !== "undefined") {
+  const $ = id => document.getElementById(id);
+  const token = new URLSearchParams(window.location.search).get("token") || "";
+  const gate = activationState(token);
+
+  function showMsg(text, ok) {
+    $("act-msg").innerHTML = text
+      ? '<div class="form-msg ' + (ok ? "ok" : "error") + '" role="alert"></div>'
+      : "";
+    if (text) $("act-msg").firstChild.textContent = text;
+  }
+
+  if (gate.state === "ready") {
+    $("act-ready").hidden = false;
+    $("act-name").textContent = gate.provision.name || "";
+    $("act-email").textContent = gate.provision.email;
+    $("activate-form").addEventListener("submit", e => {
+      e.preventDefault();
+      showMsg("");
+      const r = demoActivate(token, $("ac-password").value, $("ac-confirm").value);
+      if (!r.ok) { showMsg(r.error, false); return; }
+      $("act-ready").hidden = true;
+      $("act-done").hidden = false;
+      showMsg("Your demo account is active — welcome, " + r.account.name + ".", true);
+    });
+  } else {
+    const texts = {
+      unknown: "This activation link is not valid. Check the link in your email, or contact info@getmedexec.com and we will reissue it.",
+      used: "This activation link has already been used — your account is active. Sign in from the Demo Portal with the password you set.",
+      paused: "Access for this account is currently paused. Your account is preserved — contact info@getmedexec.com.",
+      revoked: "This activation link has been revoked. Contact info@getmedexec.com."
+    };
+    $("act-blocked").hidden = false;
+    $("act-blocked-text").textContent = texts[gate.state] || texts.unknown;
+  }
+}
+</script>
+</body>
+</html>

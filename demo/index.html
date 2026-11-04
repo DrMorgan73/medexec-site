@@ -200,50 +200,15 @@
         <h1>The workflow, <em>screen by screen.</em></h1>
         <p class="lede">A live walkthrough of MEDEXEC — from a 445-page scanned record at intake to the attested expert report — on the exact MEDEXEC dashboard, with synthetic cases. No real patient data is used anywhere in this demo.</p>
         <div class="hero-actions">
-          <button class="btn primary" type="button" data-goto="signup">Create your demo access</button>
-          <button class="btn" type="button" data-goto="login">Sign in</button>
+          <button class="btn primary" type="button" data-goto="login">Sign in</button>
         </div>
-        <p class="small" style="color:var(--hero-muted);max-width:620px;margin-top:1.2rem;">Demo access is available to those who have signed the MEDEXEC Mutual Confidentiality Agreement (NDA). If you received a signup email after signing, create your access with that same email address.</p>
+        <p class="small" style="color:var(--hero-muted);max-width:620px;margin-top:1.2rem;">Demo access is available to those who have signed the MEDEXEC Mutual Confidentiality Agreement (NDA). There is no public signup — MEDEXEC creates each demo account, and if one has been created for you, your email holds a one-time activation link to set your password.</p>
       </div>
     </div>
     <div class="wrap section">
       <h2>Inside the demo</h2>
       <p class="lede">Six stages, exactly as the platform runs them — in the live product, not a mock-up.</p>
       <p class="lede" style="max-width:760px;">Intake &rarr; Extraction &rarr; Pertinent Report &rarr; Expert Opinion Agent &rarr; Expert Report Agent &rarr; Final Report + Export — the full pipeline, in the product itself, on synthetic matters staged at each step so you can open any stage and inspect it.</p>
-    </div>
-  </section>
-
-  <!-- ============ VIEW: SIGNUP ============ -->
-  <section id="view-signup" hidden>
-    <div class="wrap section">
-      <div class="card form-card">
-        <p class="eyebrow">Demo Portal</p>
-        <h2>Create your demo access</h2>
-        <div class="nda-note">Demo access is for those who have <strong>signed the MEDEXEC Mutual Confidentiality Agreement (NDA)</strong>. Use the email address your signed NDA and signup email were sent to — access is approved per email address.</div>
-        <div class="form-msg error" id="signup-msg" hidden></div>
-        <form id="signup-form" novalidate>
-          <div class="field">
-            <label for="su-name">Full name</label>
-            <input id="su-name" name="name" type="text" autocomplete="name" required>
-          </div>
-          <div class="field">
-            <label for="su-email">Email</label>
-            <input id="su-email" name="email" type="email" autocomplete="email" required>
-            <p class="hint">Must match the email on your signed NDA.</p>
-          </div>
-          <div class="field">
-            <label for="su-password">Password</label>
-            <input id="su-password" name="password" type="password" autocomplete="new-password" required>
-            <p class="hint">At least 8 characters.</p>
-          </div>
-          <div class="field">
-            <label for="su-confirm">Confirm password</label>
-            <input id="su-confirm" name="confirm" type="password" autocomplete="new-password" required>
-          </div>
-          <button class="btn" type="submit" style="width:100%;">Create access</button>
-        </form>
-        <p class="small muted" style="margin-top:1rem;">Already created your access? <button class="text-link" type="button" data-goto="login">Sign in</button></p>
-      </div>
     </div>
   </section>
 
@@ -265,7 +230,7 @@
           </div>
           <button class="btn" type="submit" style="width:100%;">Sign in to the demo</button>
         </form>
-        <p class="small muted" style="margin-top:1rem;">Signed the NDA but not created access yet? <button class="text-link" type="button" data-goto="signup">Create your demo access</button></p>
+        <p class="small muted" style="margin-top:1rem;">Demo accounts are created by MEDEXEC after a signed NDA — there is no public signup. If you received an activation email, set your password from the link in it first, then sign in here.</p>
       </div>
     </div>
   </section>
@@ -298,21 +263,19 @@
 
 <div class="toast" id="toast" role="status"></div>
 
+<script src="provisioning.js"></script>
 <script>
 "use strict";
 /* =====================================================================
-   MEDEXEC Demo Portal — gate + live workflow (v1, for DrMorgan's review)
-   Static property: the gate is a client-side simulation backed by the
-   allowlist config below. Real per-user auth is the named next step;
-   the allowlist mechanics (approved emails, one account per email) are
-   implemented as real code so approved-list changes are data-only.
+   MEDEXEC Demo Portal — gate (v2, provisioned-access model)
+   Static property: the gate is a client-side simulation. There is NO
+   public self-signup and passwords are never sent by email: MEDEXEC
+   provisions each account (provisioning.js — DEMO_PROVISIONED_ACCOUNTS,
+   the allowlist underneath), the signer receives a one-time activation
+   link and sets their own password at demo/activate/. Every account
+   carries a status we control — invited / active / paused / revoked —
+   enforced here at login. Real per-user auth is the named next step.
    ===================================================================== */
-
-/* ---- Approved emails: NDA signers who may create demo access.
-        DrMorgan supplies the real list; add one entry per signer. ---- */
-const DEMO_ALLOWLIST = [
-  { email: "demo@medexec.example", name: "Demo Reviewer" }
-];
 
 /* ---- Seed account so the portal can be reviewed end to end.
         The seed email is on the allowlist above. ---- */
@@ -343,12 +306,33 @@ const DemoStore = (() => {
 
 const ACCOUNTS_KEY = "medexec_demo_accounts";
 const SESSION_KEY = "medexec_demo_session";
+const ACTIVATIONS_KEY = "medexec_demo_activations";
 
 function normalizeEmail(email) { return String(email || "").trim().toLowerCase(); }
 
-function isAllowlisted(email) {
+/* The provisioning list (provisioning.js) is the allowlist underneath:
+   only emails MEDEXEC has provisioned can ever activate or sign in. */
+function findProvisioned(email) {
   const e = normalizeEmail(email);
-  return DEMO_ALLOWLIST.some(a => normalizeEmail(a.email) === e);
+  const list = typeof DEMO_PROVISIONED_ACCOUNTS !== "undefined" ? DEMO_PROVISIONED_ACCOUNTS : [];
+  return list.find(a => normalizeEmail(a.email) === e) || null;
+}
+
+function loadActivations() {
+  const stored = DemoStore.get(ACTIVATIONS_KEY);
+  return stored && typeof stored === "object" ? stored : {};
+}
+
+/* Effective status: the config status wins for paused/revoked (flipped
+   by us + redeploy); a completed activation turns invited → active. */
+function effectiveStatus(email) {
+  const p = findProvisioned(email);
+  if (!p) return null;
+  const s = String(p.status || "invited").toLowerCase();
+  if (s === "revoked") return "revoked";
+  if (s === "paused") return "paused";
+  if (s === "active") return "active";
+  return loadActivations()[normalizeEmail(email)] ? "active" : "invited";
 }
 
 function loadAccounts() {
@@ -369,30 +353,21 @@ function findAccount(email) {
   return loadAccounts().find(a => normalizeEmail(a.email) === e) || null;
 }
 
-/* Signup: allowed only for allowlisted emails; one account per email. */
-function demoSignup(name, email, password, confirm) {
-  name = String(name || "").trim();
-  email = normalizeEmail(email);
-  if (!name) return { ok: false, error: "Enter your full name." };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: "Enter a valid email address." };
-  if (!isAllowlisted(email)) {
-    return { ok: false, error: "This email is not on the approved demo list yet. Demo access follows a signed MEDEXEC NDA — if you signed and received a signup email, check the address matches your NDA exactly, or contact info@getmedexec.com." };
-  }
-  if (findAccount(email) && !findAccount(email).seedPending) {
-    const existing = findAccount(email);
-    if (existing && existing.password) return { ok: false, error: "An account with this email already exists. Sign in instead." };
-  }
-  if (String(password || "").length < 8) return { ok: false, error: "Password must be at least 8 characters." };
-  if (password !== confirm) return { ok: false, error: "Passwords do not match." };
-  const accounts = loadAccounts().filter(a => normalizeEmail(a.email) !== email);
-  accounts.push({ name, email, password: String(password) });
-  saveAccounts(accounts);
-  return { ok: true, account: { name, email } };
-}
-
+/* Login: provisioned accounts only, status-gated. There is no signup —
+   accounts come from MEDEXEC provisioning + the one-time activation
+   link (demo/activate/), which is where the password gets set. */
 function demoLogin(email, password) {
+  email = normalizeEmail(email);
+  const status = effectiveStatus(email);
   const account = findAccount(email);
-  if (!account) return { ok: false, error: "No demo account exists for this email. If you signed the NDA, create your access first." };
+  if (!account) {
+    if (status === "invited") return { ok: false, error: "This demo account has been created but not activated yet. Use the activation link in your email to set your password first." };
+    if (status === "paused") return { ok: false, error: "Access for this account is paused. Your account is preserved — contact info@getmedexec.com." };
+    if (status === "revoked") return { ok: false, error: "Access for this account has been revoked. Contact info@getmedexec.com." };
+    return { ok: false, error: "No demo account exists for this email. Demo accounts are created by MEDEXEC for NDA signers — there is no public signup." };
+  }
+  if (status === "paused") return { ok: false, error: "Access for this account is paused. Your account is preserved — contact info@getmedexec.com." };
+  if (status === "revoked") return { ok: false, error: "Access for this account has been revoked. Contact info@getmedexec.com." };
   if (account.password !== String(password || "")) return { ok: false, error: "Incorrect password for this demo account." };
   const session = { name: account.name, email: normalizeEmail(account.email) };
   DemoStore.set(SESSION_KEY, session);
@@ -404,7 +379,7 @@ function demoSignOut() { DemoStore.remove(SESSION_KEY); }
 
 /* Exposed for the node smoke test; harmless in the browser. */
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { DEMO_ALLOWLIST, DEMO_SEED_ACCOUNTS, DemoStore, isAllowlisted, demoSignup, demoLogin, demoSession, demoSignOut, findAccount };
+  module.exports = { DEMO_SEED_ACCOUNTS, DemoStore, findProvisioned, effectiveStatus, loadActivations, demoLogin, demoSession, demoSignOut, findAccount };
 }
 </script>
 
@@ -421,7 +396,7 @@ const DEMO_APP_URL = "app/";
 
 /* ===== View router + forms (browser only) ===== */
 if (typeof document !== "undefined") {
-  const VIEWS = ["landing", "signup", "login", "home"];
+  const VIEWS = ["landing", "login", "home"];
   const $ = id => document.getElementById(id);
 
   function showToast(text) {
@@ -432,7 +407,12 @@ if (typeof document !== "undefined") {
   }
 
   function refreshNav() {
-    const s = demoSession();
+    let s = demoSession();
+    if (s) {
+      /* Status flips (paused/revoked) end an existing session here. */
+      const st = effectiveStatus(s.email);
+      if (st === "paused" || st === "revoked") { demoSignOut(); s = null; }
+    }
     const btn = $("nav-auth-btn");
     const user = $("nav-user");
     if (s) {
@@ -466,16 +446,6 @@ if (typeof document !== "undefined") {
     m.textContent = text;
     m.hidden = !text;
   }
-
-  $("signup-form").addEventListener("submit", e => {
-    e.preventDefault();
-    formMsg("signup-msg", "");
-    const r = demoSignup($("su-name").value, $("su-email").value, $("su-password").value, $("su-confirm").value);
-    if (!r.ok) { formMsg("signup-msg", r.error); return; }
-    const li = demoLogin(r.account.email, $("su-password").value);
-    if (li.ok) { showView("home"); showToast("Demo access created — welcome, " + r.account.name + "."); }
-    else showView("login");
-  });
 
   $("login-form").addEventListener("submit", e => {
     e.preventDefault();
