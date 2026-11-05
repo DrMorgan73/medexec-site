@@ -60,6 +60,13 @@ const DEMO_PROVISIONED_ACCOUNTS = [
     email: "demo@medexec.example",
     name: "Demo Reviewer",
     status: "active"
+  },
+  {
+    email: "mohdology@gmail.com",
+    name: "Mohamed Ismael",
+    token: "263ac95efb00f4cf415af1d5f1d88c8bca400e8e2a0f972d",
+    status: "invited",
+    issuedAt: "2026-11-05T07:43:52-05:00"
   }
 ];
 
