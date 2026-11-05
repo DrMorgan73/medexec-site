@@ -74,6 +74,13 @@ const DEMO_PROVISIONED_ACCOUNTS = [
     token: "0ffbee26501d5432e366268674880e7e47ca00b968a6696d",
     status: "invited",
     issuedAt: "2026-11-05T07:49:21-05:00"
+  },
+  {
+    email: "troyhyde@lghires.com",
+    name: "Troy Hyde",
+    token: "458987a6211bc8a5b032ec8049d83ba69094413c35cbb389",
+    status: "invited",
+    issuedAt: "2026-11-05T13:53:40-05:00"
   }
 ];
 
