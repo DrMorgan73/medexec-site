@@ -260,26 +260,28 @@ function findProvisionByToken(token) {
   return provisionedList().find(a => a.token && a.token === t) || null;
 }
 
-/* Access notifications (DrMorgan's order, 2026-11-04): on a SUCCESSFUL
-   activation we tell the server endpoint (/api/demo-notify), which
-   emails DrMorgan who activated and when. Fire-and-forget — a
-   notification failure must never block or break the activation.
-   Failed attempts never call this. The seed account can never be
-   activated (it has no token), and the endpoint enforces the same
-   seed silence server-side. */
-const DEMO_SEED_EMAIL = "demo@medexec.example";
-function notifyDemoAccess(event, who) {
+/* Activity monitoring (DrMorgan's orders, 2026-11-04 + 2026-11-05):
+   activation outcomes are reported to the server endpoint
+   (/api/demo-notify) — the successful activation, and failed or
+   blocked attempts (paused / revoked / already-used / invalid
+   password entries) with their reason. The endpoint emails DrMorgan
+   only on a successful activation and forwards every event to the
+   IEC Office activity feed. Fire-and-forget — monitoring must never
+   block or break the activation. The seed account can never be
+   activated (it has no token). Passwords and the activation token
+   are never included in any event. */
+function notifyDemoAccess(event, who, detail) {
   try {
     const email = normalizeEmail(who && who.email);
-    if (!email || email === DEMO_SEED_EMAIL) return;
+    if (!email) return;
     if (typeof fetch !== "function") return;
     fetch("/api/demo-notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event, name: (who && who.name) || "", email }),
+      body: JSON.stringify({ event, name: (who && who.name) || "", email, detail: detail || "" }),
       keepalive: true
     }).catch(() => {});
-  } catch (e) { /* notifications never break the demo */ }
+  } catch (e) { /* monitoring never breaks the demo */ }
 }
 
 /* The gate every activation passes through, in order:
@@ -299,12 +301,13 @@ function activationState(token) {
 
 function demoActivate(token, password, confirm) {
   const gate = activationState(token);
+  const who = gate.provision ? { email: gate.provision.email, name: gate.provision.name || "" } : null;
   if (gate.state === "unknown") return { ok: false, error: "This activation link is not valid. Check the link in your email, or contact info@getmedexec.com." };
-  if (gate.state === "revoked") return { ok: false, error: "This activation link has been revoked. Contact info@getmedexec.com." };
-  if (gate.state === "paused") return { ok: false, error: "Access for this account is currently paused. Contact info@getmedexec.com." };
-  if (gate.state === "used") return { ok: false, error: "This activation link has already been used. Sign in with the password you set." };
-  if (String(password || "").length < 8) return { ok: false, error: "Password must be at least 8 characters." };
-  if (password !== confirm) return { ok: false, error: "Passwords do not match." };
+  if (gate.state === "revoked") { notifyDemoAccess("revoked_attempt", who); return { ok: false, error: "This activation link has been revoked. Contact info@getmedexec.com." }; }
+  if (gate.state === "paused") { notifyDemoAccess("paused_attempt", who); return { ok: false, error: "Access for this account is currently paused. Contact info@getmedexec.com." }; }
+  if (gate.state === "used") { notifyDemoAccess("login_failed", who, "activation link already used"); return { ok: false, error: "This activation link has already been used. Sign in with the password you set." }; }
+  if (String(password || "").length < 8) { notifyDemoAccess("login_failed", who, "password too short"); return { ok: false, error: "Password must be at least 8 characters." }; }
+  if (password !== confirm) { notifyDemoAccess("login_failed", who, "passwords do not match"); return { ok: false, error: "Passwords do not match." }; }
   const prov = gate.provision;
   const email = normalizeEmail(prov.email);
   const accounts = loadAccounts().filter(a => normalizeEmail(a.email) !== email);
@@ -354,6 +357,13 @@ if (typeof document !== "undefined") {
       showMsg("Your demo account is active — welcome, " + r.account.name + ".", true);
     });
   } else {
+    /* Opening a blocked link is itself a monitored attempt. */
+    if (gate.provision) {
+      const who = { email: gate.provision.email, name: gate.provision.name || "" };
+      if (gate.state === "paused") notifyDemoAccess("paused_attempt", who, "activation link opened");
+      else if (gate.state === "revoked") notifyDemoAccess("revoked_attempt", who, "activation link opened");
+      else if (gate.state === "used") notifyDemoAccess("login_failed", who, "activation link already used");
+    }
     const texts = {
       unknown: "This activation link is not valid. Check the link in your email, or contact info@getmedexec.com and we will reissue it.",
       used: "This activation link has already been used — your account is active. Sign in from the Demo Portal with the password you set.",

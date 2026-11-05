@@ -765,6 +765,27 @@ function applyStepSideEffects(){
 function exportGate(){
   return S.op.approved || S.step>=7;
 }
+/* Activity monitoring (DrMorgan's order, 2026-11-05): step changes
+   and key actions are reported to /api/demo-notify as step_view /
+   action / logout events with the signed-in demo identity from the
+   portal session. The endpoint emails nothing for these — it
+   forwards them to the IEC Office activity feed. Fire-and-forget;
+   monitoring never blocks the demo. No passwords or tokens, ever. */
+function reportDemoEvent(event, detail){
+  try {
+    if (typeof fetch !== "function" || typeof localStorage === "undefined") return;
+    var raw = localStorage.getItem("medexec_demo_session");
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (!s || !s.email) return;
+    fetch("/api/demo-notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: event, name: s.name || "", email: s.email, detail: detail || "" }),
+      keepalive: true
+    }).catch(function(){});
+  } catch(e) { /* monitoring never breaks the demo */ }
+}
 /* ============ DOM WIRING (browser only) ============ */
 if (typeof document !== "undefined") {
   var toastTimer = null, autoTimer = null;
@@ -785,6 +806,7 @@ if (typeof document !== "undefined") {
     S.step = n < 0 ? 0 : (n >= STEPS.length ? 0 : n);
     if (S.step === 0 && n >= STEPS.length) { S.op = { draft:false, inReview:false, rating:"", approved:false }; S.agent = { running:false, ran:false, log:[] }; }
     render();
+    reportDemoEvent("step_view", "step_" + (S.step + 1) + "_" + STEPS[S.step].view);
   }
   function runAgent(){
     if (S.agent.running || S.agent.ran) return;
@@ -825,7 +847,10 @@ if (typeof document !== "undefined") {
     if (act) { ev.preventDefault(); stopAuto(); S.view = "activity"; render(); return; }
     var exp = ev.target.closest("[data-export]");
     if (exp) { ev.preventDefault();
-      if (!exportGate() && exp.getAttribute("data-export") !== "preview") { toast("Export refused — the opinion is not approved. Approval requires every AMA rating flag dispositioned and a named expert attestation recorded.", true); return; }
+      var expKind = exp.getAttribute("data-export");
+      var expRefused = !exportGate() && expKind !== "preview";
+      reportDemoEvent("action", "export_" + expKind + (expRefused ? "_refused" : ""));
+      if (expRefused) { toast("Export refused — the opinion is not approved. Approval requires every AMA rating flag dispositioned and a named expert attestation recorded.", true); return; }
       if (exp.getAttribute("data-export") === "preview" && !exportGate()) { toast("Preview generated — watermarked DRAFT — PENDING EXPERT REVIEW, as on the live platform."); return; }
       toast("Demo export — on the live platform this generates the real " + (exp.getAttribute("data-export")==="docx" ? "DOCX" : "PDF") + " file. Synthetic data only."); return; }
     if (ev.target.id === "gNext") { goStep(S.step + 1); return; }
@@ -838,11 +863,12 @@ if (typeof document !== "undefined") {
     if (ev.target.id === "attestBtn") {
       var inp = document.getElementById("ratingInput");
       var val = inp ? inp.value.trim() : "";
-      if (!val) { toast("Approval refused — the AMA rating flag is still open. The expert must enter the impairment rating before attesting.", true); return; }
+      if (!val) { reportDemoEvent("action", "attestation_refused"); toast("Approval refused — the AMA rating flag is still open. The expert must enter the impairment rating before attesting.", true); return; }
       S.op.rating = val; S.op.approved = true; render();
+      reportDemoEvent("action", "attestation_submit");
       toast("Approved and attested by Mohammed M. Morgan, M.D. — attestation recorded. Export unlocked."); return; }
     if (ev.target.id === "runAgentBtn") { runAgent(); return; }
-    if (ev.target.id === "signOutBtn") { try { localStorage.removeItem("medexec_demo_session"); } catch(e){} window.location.href = "../"; return; }
+    if (ev.target.id === "signOutBtn") { reportDemoEvent("logout"); try { localStorage.removeItem("medexec_demo_session"); } catch(e){} window.location.href = "../"; return; }
   });
   /* Session gate — the hidden portal (../) is the only door. */
   var hasSession = false;
@@ -856,7 +882,7 @@ if (typeof document !== "undefined") {
   }
 }
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { MATTERS: MATTERS, STEPS: STEPS, S: S, dashboardHTML: dashboardHTML, mattersHTML: mattersHTML, matterHTML: matterHTML, reportHTML: reportHTML, reportSheetHTML: reportSheetHTML, opinionHTML: opinionHTML, opinionDocHTML: opinionDocHTML, opinionBlocksHTML: opinionBlocksHTML, opinionTextPlain: opinionTextPlain, auditsHTML: auditsHTML, activityHTML: activityHTML, finalHTML: finalHTML, reportsHTML: reportsHTML, guidebarHTML: guidebarHTML, currentViewHTML: currentViewHTML, applyStepSideEffects: applyStepSideEffects, exportGate: exportGate, heroStatus: heroStatus, DEMO_RATING: DEMO_RATING };
+  module.exports = { MATTERS: MATTERS, STEPS: STEPS, S: S, dashboardHTML: dashboardHTML, mattersHTML: mattersHTML, matterHTML: matterHTML, reportHTML: reportHTML, reportSheetHTML: reportSheetHTML, opinionHTML: opinionHTML, opinionDocHTML: opinionDocHTML, opinionBlocksHTML: opinionBlocksHTML, opinionTextPlain: opinionTextPlain, auditsHTML: auditsHTML, activityHTML: activityHTML, finalHTML: finalHTML, reportsHTML: reportsHTML, guidebarHTML: guidebarHTML, currentViewHTML: currentViewHTML, applyStepSideEffects: applyStepSideEffects, exportGate: exportGate, heroStatus: heroStatus, DEMO_RATING: DEMO_RATING, reportDemoEvent: reportDemoEvent };
 }
 
 </script>

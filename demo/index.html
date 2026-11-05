@@ -353,25 +353,27 @@ function findAccount(email) {
   return loadAccounts().find(a => normalizeEmail(a.email) === e) || null;
 }
 
-/* Access notifications (DrMorgan's order, 2026-11-04): on a SUCCESSFUL
-   login we tell the server endpoint (/api/demo-notify), which emails
-   DrMorgan who signed in and when. Fire-and-forget — a notification
-   failure must never block or break the sign-in. Failed attempts never
-   call this. The seed account is internal testing and stays silent;
-   the endpoint independently enforces the same silence server-side. */
-const DEMO_SEED_EMAIL = "demo@medexec.example";
-function notifyDemoAccess(event, who) {
+/* Activity monitoring (DrMorgan's orders, 2026-11-04 + 2026-11-05):
+   EVERY access event is reported to the server endpoint
+   (/api/demo-notify) — successful logins, failed attempts with their
+   reason, paused/revoked attempts, sign-outs. The endpoint emails
+   DrMorgan only on a successful login/activation (the seed account
+   never emails) and forwards every event to the IEC Office activity
+   feed, flagging the seed there. Fire-and-forget — a monitoring
+   failure must never block or break the sign-in. Passwords and
+   tokens are never included in any event. */
+function notifyDemoAccess(event, who, detail) {
   try {
     const email = normalizeEmail(who && who.email);
-    if (!email || email === DEMO_SEED_EMAIL) return;
+    if (!email) return;
     if (typeof fetch !== "function") return;
     fetch("/api/demo-notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ event, name: (who && who.name) || "", email }),
+      body: JSON.stringify({ event, name: (who && who.name) || "", email, detail: detail || "" }),
       keepalive: true
     }).catch(() => {});
-  } catch (e) { /* notifications never break the demo */ }
+  } catch (e) { /* monitoring never breaks the demo */ }
 }
 
 /* Login: provisioned accounts only, status-gated. There is no signup —
@@ -381,15 +383,17 @@ function demoLogin(email, password) {
   email = normalizeEmail(email);
   const status = effectiveStatus(email);
   const account = findAccount(email);
+  const who = { email, name: account ? account.name : "" };
   if (!account) {
-    if (status === "invited") return { ok: false, error: "This demo account has been created but not activated yet. Use the activation link in your email to set your password first." };
-    if (status === "paused") return { ok: false, error: "Access for this account is paused. Your account is preserved — contact info@getmedexec.com." };
-    if (status === "revoked") return { ok: false, error: "Access for this account has been revoked. Contact info@getmedexec.com." };
+    if (status === "invited") { notifyDemoAccess("login_failed", who, "not activated"); return { ok: false, error: "This demo account has been created but not activated yet. Use the activation link in your email to set your password first." }; }
+    if (status === "paused") { notifyDemoAccess("paused_attempt", who); return { ok: false, error: "Access for this account is paused. Your account is preserved — contact info@getmedexec.com." }; }
+    if (status === "revoked") { notifyDemoAccess("revoked_attempt", who); return { ok: false, error: "Access for this account has been revoked. Contact info@getmedexec.com." }; }
+    notifyDemoAccess("login_failed", who, "unknown email");
     return { ok: false, error: "No demo account exists for this email. Demo accounts are created by MEDEXEC for NDA signers — there is no public signup." };
   }
-  if (status === "paused") return { ok: false, error: "Access for this account is paused. Your account is preserved — contact info@getmedexec.com." };
-  if (status === "revoked") return { ok: false, error: "Access for this account has been revoked. Contact info@getmedexec.com." };
-  if (account.password !== String(password || "")) return { ok: false, error: "Incorrect password for this demo account." };
+  if (status === "paused") { notifyDemoAccess("paused_attempt", who); return { ok: false, error: "Access for this account is paused. Your account is preserved — contact info@getmedexec.com." }; }
+  if (status === "revoked") { notifyDemoAccess("revoked_attempt", who); return { ok: false, error: "Access for this account has been revoked. Contact info@getmedexec.com." }; }
+  if (account.password !== String(password || "")) { notifyDemoAccess("login_failed", who, "wrong password"); return { ok: false, error: "Incorrect password for this demo account." }; }
   const session = { name: account.name, email: normalizeEmail(account.email) };
   DemoStore.set(SESSION_KEY, session);
   notifyDemoAccess("login", session);
@@ -397,7 +401,11 @@ function demoLogin(email, password) {
 }
 
 function demoSession() { return DemoStore.get(SESSION_KEY); }
-function demoSignOut() { DemoStore.remove(SESSION_KEY); }
+function demoSignOut() {
+  const s = DemoStore.get(SESSION_KEY);
+  if (s && s.email) notifyDemoAccess("logout", s);
+  DemoStore.remove(SESSION_KEY);
+}
 
 /* Exposed for the node smoke test; harmless in the browser. */
 if (typeof module !== "undefined" && module.exports) {
