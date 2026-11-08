@@ -799,6 +799,12 @@ body.door-lock{overflow:hidden}
     </section>
 
     <section class="wrap section" id="nda">
+      <div style="border:1.5px solid #10305A;border-radius:14px;padding:22px 24px;background:#F2F7FC">
+        <p class="section-kicker">Mutual NDA — one agreement for all IEC assets</p>
+        <h2 style="margin-top:4px">IEC now signs one universal NDA.</h2>
+        <p class="section-intro">International Empire Consultants, Inc. — owner of MEDEXEC and every other IEC asset — uses a single mutual NDA, signed on IEC's central signing page. One signing covers MEDEXEC and all IEC assets, and it creates your MEDEXEC Demo Portal access exactly as before.</p>
+        <p style="margin-top:14px"><a class="btn" href="https://iecincglobal.com/nda.html?origin=medexec">Continue to the IEC NDA signing page <span aria-hidden="true">→</span></a></p>
+      </div>
       <div class="legal-head">
         <div>
           <p class="section-kicker">Interactive product demo</p>
@@ -1548,5 +1554,16 @@ body.door-lock{overflow:hidden}
       renderAssistant(true);
     })();
   </script>
+<script>
+  // IEC's ONE universal NDA (2026-11-08): the MEDEXEC signing flow moved
+  // to IEC's central signing page. Any arrival at #nda — direct link or
+  // in-page anchor — continues there with the MEDEXEC origin recorded.
+  (function () {
+    var target = "https://iecincglobal.com/nda.html?origin=medexec";
+    function go() { if (window.location.hash === "#nda") window.location.replace(target); }
+    window.addEventListener("hashchange", go);
+    go();
+  })();
+</script>
 </body>
 </html>
