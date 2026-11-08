@@ -88,6 +88,13 @@ const DEMO_PROVISIONED_ACCOUNTS = [
     token: "1ca1f11b801f8776b8e952c0ef7113be8257b1713cf41f45",
     status: "invited",
     issuedAt: "2026-11-07T15:57:52-05:00"
+  },
+  {
+    email: "claude-nda-test@example.com",
+    name: "Claude Test",
+    token: "d9fddd04941be35950cbe7694fd96b6119a0af75e23eb107",
+    status: "invited",
+    issuedAt: "2026-11-08T16:34:42-05:00"
   }
 ];
 
