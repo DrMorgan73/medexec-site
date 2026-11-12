@@ -95,6 +95,13 @@ const DEMO_PROVISIONED_ACCOUNTS = [
     token: "a90c7c95b167cfc77ef34c7c6f672cf51a02f1b7b735613a",
     status: "invited",
     issuedAt: "2026-11-10T13:33:56-05:00"
+  },
+  {
+    email: "mzaza@va-hcs.com",
+    name: "Mohamad Zaza",
+    token: "6fb5b45b4dc1b197f59e6c5ddfef57801e27afe89209afe5",
+    status: "invited",
+    issuedAt: "2026-11-12T14:18:05-05:00"
   }
 ];
 
