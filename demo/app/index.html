@@ -153,9 +153,9 @@ textarea.opinion-edit{width:100%;min-height:64px;border:1px solid var(--line);bo
       <div class="sidebar-foot">
         <div class="status-light"><span class="dot">●</span> All systems normal</div>
         <div class="user-row">
-          <div class="avatar">M</div>
+          <div class="avatar">D</div>
           <div>
-            <div class="user-name">Mohammed M. Morgan, M.D.</div>
+            <div class="user-name">Daniel Reyes, M.D.</div>
             <div class="user-role">ADMINISTRATOR</div>
           </div>
         </div>
@@ -231,8 +231,8 @@ var HERO_CONFLICTS = [
     rationale: "The intake face sheet records date of birth 03/14/1978 (p. 1); a therapy note header records 03/14/1987 (p. 63). Age-dependent statements in this report are flagged AGE_UNVERIFIABLE until the reviewer confirms the date against source identification." }
 ];
 var HERO_PAGE_ISSUES = [
-  { page: 63, file: "synthetic-record.pdf", reason: "Low-confidence OCR text", detail: "Therapy note header read at low OCR confidence; the date of birth in that header is one of the two conflicting values carried in Section VII.", finding: "Page checked against the original document; the header was confirmed as read, and the date-of-birth value is carried as a conflict rather than corrected.", by: "Mohammed M. Morgan, M.D.", at: "11/04/2026" },
-  { page: 118, file: "synthetic-record.pdf", reason: "No readable text extracted (OCR)", detail: "Fax cover sheet with no extractable text layer.", finding: "Confirmed as a fax cover page carrying no clinical content; no finding in this report rests on this page.", by: "Mohammed M. Morgan, M.D.", at: "11/04/2026" }
+  { page: 63, file: "synthetic-record.pdf", reason: "Low-confidence OCR text", detail: "Therapy note header read at low OCR confidence; the date of birth in that header is one of the two conflicting values carried in Section VII.", finding: "Page checked against the original document; the header was confirmed as read, and the date-of-birth value is carried as a conflict rather than corrected.", by: "Daniel Reyes, M.D.", at: "11/04/2026" },
+  { page: 118, file: "synthetic-record.pdf", reason: "No readable text extracted (OCR)", detail: "Fax cover sheet with no extractable text layer.", finding: "Confirmed as a fax cover page carrying no clinical content; no finding in this report rests on this page.", by: "Daniel Reyes, M.D.", at: "11/04/2026" }
 ];
 var HERO_READING = ["This report is based on a medical record of 445 pages. Every page was read electronically. 12 pages were difficult to read. Each of those pages was checked against the original document by a reviewer before this report was prepared."];
 var DEFAULT_SCOPE = "General clinical review of the submitted record set for pertinent findings.";
@@ -250,9 +250,9 @@ var OPINION_SECTIONS = [
   { key: "prognosis", title: "PROGNOSIS", body: "Improving with conservative care (pain 8/10 → 5/10). Continued therapy expected to yield further improvement." },
   { key: "therapeuticOptions", title: "REASONABLE THERAPEUTIC OPTIONS FOR THIS PATIENT", body: "Continued physical therapy; epidural steroid injection if progress plateaus; surgical consultation only if conservative care fails." },
   { key: "closing", title: "Closing", body: "This opinion is based on the records cited and the evaluation noted. I reserve the right to supplement it if additional records are provided." },
-  { key: "signatureBlock", title: "Signature", body: "Mohammed M. Morgan, M.D.\nExpert signature on approval — the approved opinion is attested in MEDEXEC with the expert’s name and timestamp." }
+  { key: "signatureBlock", title: "Signature", body: "Daniel Reyes, M.D.\nExpert signature on approval — the approved opinion is attested in MEDEXEC with the expert’s name and timestamp." }
 ];
-var OPINION_ATTEST_NAME = "Mohammed M. Morgan, M.D.";
+var OPINION_ATTEST_NAME = "Daniel Reyes, M.D.";
 function opinionAttestIso(m){ return m.id === HERO_ID ? "2026-11-04T15:22:00.000Z" : "2026-11-02T15:05:00.000Z"; }
 /* The opinion as one document text — mirrors renderOpinionText: DRAFT label
    first when unapproved, opener/signature without headings, attestation
@@ -531,7 +531,7 @@ function reportDataFor(m, st){
     scope: DEFAULT_SCOPE,
     clinicalHistory: [], diagnoses: [], treatment: [], objectiveFindings: [],
     responseToTreatment: [], workStatus: [], conflicts: [], pageIssues: [],
-    certification: { name: "Mohammed M. Morgan, M.D.", role: "Physician",
+    certification: { name: "Daniel Reyes, M.D.", role: "Physician",
       version: approved ? "1" : "[Pending]",
       when: approved ? (isHero ? "11/04/2026, 15:35 UTC" : "11/02/2026, 15:05 UTC") : "[Pending]" },
     expertOpinion: null,
@@ -669,13 +669,13 @@ function opinionHTML(m, op, interactive){
   }
   var exports = '<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button type="button" class="btn btn-ghost" data-export="preview">Preview PDF (DRAFT-labeled)</button><button type="button" class="btn '+(op.approved?'btn-primary':'btn-ghost')+'" data-export="pdf">Export PDF</button><button type="button" class="btn '+(op.approved?'btn-primary':'btn-ghost')+'" data-export="docx">Export DOCX</button></div>';
   var banner = op.approved
-    ? '<div class="approved-banner">APPROVED — attested by Mohammed M. Morgan, M.D. · attestation recorded before export</div>'
+    ? '<div class="approved-banner">APPROVED — attested by Daniel Reyes, M.D. · attestation recorded before export</div>'
     : '<div class="draft-banner">DRAFT — PENDING EXPERT REVIEW</div>';
   return head + inputs
   + '<div class="card"><div class="eyebrow">EXPERT OPINION AGENT</div>' + banner + amaBlock + gaps + docView
   + '<div style="font-size:12.5px;color:var(--ink-soft)">Insert macro… <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:12px" onclick="return false">Insert</button></div></div>'
   + '<div class="card"><div class="eyebrow">REVIEW, APPROVAL &amp; EXPORT</div><h3 class="card-title">Review, Approval &amp; Export</h3>' + review + exports
-  + (op.approved ? '<p style="font-size:13px;margin-top:10px"><strong>Approved and attested by</strong> Mohammed M. Morgan, M.D. — recorded in the activity audit trail.</p>' : '')
+  + (op.approved ? '<p style="font-size:13px;margin-top:10px"><strong>Approved and attested by</strong> Daniel Reyes, M.D. — recorded in the activity audit trail.</p>' : '')
   + '</div>';
 }
 function auditsHTML(){
@@ -866,7 +866,7 @@ if (typeof document !== "undefined") {
       if (!val) { reportDemoEvent("action", "attestation_refused"); toast("Approval refused — the AMA rating flag is still open. The expert must enter the impairment rating before attesting.", true); return; }
       S.op.rating = val; S.op.approved = true; render();
       reportDemoEvent("action", "attestation_submit");
-      toast("Approved and attested by Mohammed M. Morgan, M.D. — attestation recorded. Export unlocked."); return; }
+      toast("Approved and attested by Daniel Reyes, M.D. — attestation recorded. Export unlocked."); return; }
     if (ev.target.id === "runAgentBtn") { runAgent(); return; }
     if (ev.target.id === "signOutBtn") { reportDemoEvent("logout"); try { localStorage.removeItem("medexec_demo_session"); } catch(e){} window.location.href = "../"; return; }
   });
