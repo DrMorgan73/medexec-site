@@ -196,6 +196,7 @@
     .narrative-sheet {
       position: relative;
       background: var(--surface);
+      color: var(--ink);
       box-shadow: var(--shadow);
       border-top: 5px solid var(--teal);
       padding: clamp(1.3rem, 3vw, 2.2rem);
@@ -204,10 +205,11 @@
     .narrative-sheet::after {
       content: "PILOT WORKFLOW";
       position: absolute;
-      top: 1.25rem;
-      right: -2rem;
+      top: 50%;
+      right: -3.15rem;
       transform: rotate(90deg);
       transform-origin: center;
+      white-space: nowrap;
       color: var(--coral);
       font-size: .66rem;
       font-weight: 600;
@@ -219,7 +221,7 @@
     .source-row { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding: .72rem 0; border-top: 1px solid var(--faint); font-size: .82rem; }
     .source-row b { color: var(--teal-dark); }
     .source-row span { color: var(--muted); }
-    .draft-lines { margin-top: 1.3rem; padding: 1rem; background: var(--teal-soft); border-radius: 2px; }
+    .draft-lines { margin-top: 1.3rem; padding: 1rem; background: var(--teal-soft); color: var(--ink); border-radius: 2px; }
     .draft-lines p { margin: .25rem 0; font-family: var(--serif); }
     .draft-lines mark { background: var(--yellow-soft); color: var(--ink); padding: 0 .15em; }
     .review-note { margin-top: 1rem; display: flex; gap: .6rem; align-items: flex-start; color: var(--muted); font-size: .78rem; }
@@ -686,6 +688,16 @@ body.door-lock{overflow:hidden}
 
 
     
+    <section class="wrap section" id="demo-video" aria-labelledby="demo-video-title" style="text-align:center">
+      <p class="eyebrow">Watch it work</p>
+      <h2 id="demo-video-title" style="margin:.4rem 0 .6rem">From record chaos to clinical clarity.</h2>
+      <p style="max-width:700px;margin:0 auto 1.2rem;color:var(--muted)">Every finding traced, every opinion defensible — stop reading records, start signing reports backed by evidence.</p>
+      <video controls preload="none" poster="medexec-demo-poster.jpg" style="width:100%;max-width:960px;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.18)" aria-label="MEDEXEC demo video: a live guided demo, from sign-in to the finished report">
+        <source src="medexec-demo-web.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </section>
+
     <section class="workflow section" id="workflow">
       <div class="wrap">
         <p class="section-kicker">From upload to verdict in minutes</p>
