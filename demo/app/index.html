@@ -22,6 +22,8 @@ a{color:#3457D5}
 .app-shell{display:flex;min-height:100vh}
 .app-sidebar{width:230px;flex:0 0 230px;background:var(--navy);color:#c7d0e3;padding:22px 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
 .brand{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.brand-logo{background:#fff;border-radius:8px;padding:5px 9px;display:inline-flex;align-items:center}
+.brand-logo img{height:34px;width:auto;display:block}
 .brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--teal-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--serif);font-weight:700;font-size:17px}
 .brand-name{font-family:var(--serif);font-weight:700;font-size:16px;color:#fff;line-height:1.1}
 .brand-tag{font-size:8.5px;letter-spacing:.09em;color:#8ce0ce}
@@ -142,11 +144,7 @@ textarea.opinion-edit{width:100%;min-height:64px;border:1px solid var(--line);bo
   <div class="app-shell">
     <aside class="app-sidebar">
       <div class="brand">
-        <div class="brand-mark">M</div>
-        <div>
-          <div class="brand-name">MedExec</div>
-          <div class="brand-tag">EVIDENCE. VERIFIED.</div>
-        </div>
+        <span class="brand-logo"><img src="../../logo.png" alt="MEDEXEC — Evidence. Verified."></span>
       </div>
       <nav id="sideNav"></nav>
       <div class="pilot-card"><span class="dot">●</span> INTERNAL PILOT — PHI not yet authorized — see compliance checklist</div>
@@ -875,7 +873,7 @@ if (typeof document !== "undefined") {
   try { hasSession = !!localStorage.getItem("medexec_demo_session"); } catch(e) {}
   if (!hasSession) {
     document.getElementById("lockRoot").style.display = "block";
-    document.getElementById("lockRoot").innerHTML = '<div class="lock-wrap"><div class="lock-card"><div class="brand" style="justify-content:center"><div class="brand-mark">M</div><div style="text-align:left"><div class="brand-name" style="color:var(--ink)">MedExec</div><div class="brand-tag" style="color:var(--teal-dark)">EVIDENCE. VERIFIED.</div></div></div><h2 style="font-family:var(--serif);margin:6px 0">Demo access required</h2><p style="font-size:13.5px;color:var(--ink-soft)">This demo is available only to NDA signers through the invitation link. Sign in through the demo portal to continue.</p><a class="btn btn-primary" style="display:inline-block;text-decoration:none" href="../">Go to the Demo Portal</a></div></div>';
+    document.getElementById("lockRoot").innerHTML = '<div class="lock-wrap"><div class="lock-card"><div class="brand" style="justify-content:center"><span class="brand-logo"><img src="../../logo.png" alt="MEDEXEC — Evidence. Verified."></span></div><h2 style="font-family:var(--serif);margin:6px 0">Demo access required</h2><p style="font-size:13.5px;color:var(--ink-soft)">This demo is available only to NDA signers through the invitation link. Sign in through the demo portal to continue.</p><a class="btn btn-primary" style="display:inline-block;text-decoration:none" href="../">Go to the Demo Portal</a></div></div>';
   } else {
     document.getElementById("appRoot").style.display = "block";
     render();
